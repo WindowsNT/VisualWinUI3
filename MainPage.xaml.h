@@ -1,6 +1,8 @@
 #pragma once
 
 #include "MainPage.g.h"
+#include "BlankWindow.g.h"
+#include "project.h"
 
 namespace winrt::VisualWinUI3::implementation
 {
@@ -45,9 +47,7 @@ namespace winrt::VisualWinUI3::implementation
         void OnExit(IInspectable const&, IInspectable const&);
         void OnSaveAs(IInspectable const&, IInspectable const&);
 
-        void OnDark(IInspectable const&, IInspectable const&);
-        void OnLight(IInspectable const&, IInspectable const&);
-        void OnDefault(IInspectable const&, IInspectable const&);
+     
 
     };
 }

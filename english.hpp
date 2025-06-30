@@ -14,6 +14,7 @@ L"Light",
 L"Dark",
 L"Restart application to apply.",
 L"Help",
+L"File",
 };
 
-#define MAX_LANG 16
+#define MAX_LANG 17

@@ -6,6 +6,16 @@ namespace winrt::VisualWinUI3::implementation
 {
     struct MainWindow : MainWindowT<MainWindow>
     {
+      
+        void OnDark(IInspectable const&, IInspectable const&);
+        void OnLight(IInspectable const&, IInspectable const&);
+        void OnDefault(IInspectable const&, IInspectable const&); 
+        void OnNew(IInspectable const&, IInspectable const&);
+        void OnOpen(IInspectable const&, IInspectable const&);
+        void OnSave(IInspectable const&, IInspectable const&);
+        void OnExit(IInspectable const&, IInspectable const&);
+        void OnSaveAs(IInspectable const&, IInspectable const&);
+        void NVI_ChangeLightTapped(IInspectable const&, IInspectable const&);
         MainWindow()
         {
             // Xaml objects should not call InitializeComponent during construction.

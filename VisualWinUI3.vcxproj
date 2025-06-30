@@ -120,6 +120,10 @@
     <Manifest Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BlankWindow.xaml.h">
+      <DependentUpon>BlankWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClInclude>
     <ClInclude Include="Item.h" />
     <ClInclude Include="MainPage.xaml.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -139,6 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
+    <Page Include="BlankWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -148,6 +155,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BlankWindow.xaml.cpp">
+      <DependentUpon>BlankWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </ClCompile>
     <ClCompile Include="func.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="linker.cpp" />
@@ -171,6 +182,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <Midl Include="BlankWindow.idl">
+      <DependentUpon>BlankWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Midl>
     <Midl Include="Item.idl" />
     <Midl Include="MainPage.idl">
       <DependentUpon>MainPage.xaml</DependentUpon>

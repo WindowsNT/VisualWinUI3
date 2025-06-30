@@ -13,6 +13,55 @@ using namespace Microsoft::UI::Xaml::Controls;
 
 namespace winrt::VisualWinUI3::implementation
 {
+
+	void MainWindow::OnDark(IInspectable const&, IInspectable const&)
+	{
+		SettingsX->GetRootElement().vv("Theme").SetValueInt(2);
+		SettingsX->Save();
+		void PostThemeChange();
+		PostThemeChange();
+
+	}
+	void MainWindow::OnLight(IInspectable const&, IInspectable const&)
+	{
+		SettingsX->GetRootElement().vv("Theme").SetValueInt(1);
+		SettingsX->Save();
+		void PostThemeChange();
+		PostThemeChange();
+
+	}
+	void MainWindow::OnDefault(IInspectable const&, IInspectable const&)
+	{
+		SettingsX->GetRootElement().vv("Theme").SetValueInt(0);
+		SettingsX->Save();
+		void PostThemeChange();
+		PostThemeChange();
+	}
+
+
+	void MainWindow::OnNew(IInspectable const&, IInspectable const&)
+	{
+		winrt::VisualWinUI3::MainWindow CreateWi();
+		CreateWi();
+
+	}
+	void MainWindow::OnOpen(IInspectable const&, IInspectable const&)
+	{
+
+	}
+	void MainWindow::OnSave(IInspectable const&, IInspectable const&)
+	{
+
+	}
+	void MainWindow::OnExit(IInspectable const&, IInspectable const&)
+	{
+		PostMessage((HWND)wnd(), WM_CLOSE, 0, 0);
+	}
+	void MainWindow::OnSaveAs(IInspectable const&, IInspectable const&)
+	{
+
+	}
+
 	void MainWindow::ItemInvoked(IInspectable, NavigationViewItemInvokedEventArgs ar)
 	{
 		auto topnv = Content().as<NavigationView>();
@@ -41,6 +90,16 @@ namespace winrt::VisualWinUI3::implementation
 			*/
 	}
 
+	void MainWindow :: NVI_ChangeLightTapped(IInspectable const& it, IInspectable const& e)
+	{
+		auto nt = it.as<NavigationViewItem>();
+		auto fly = nt.ContextFlyout();
+		fly.SetAttachedFlyout(nt,fly);
+		fly.ShowAttachedFlyout(nt);
+		auto tr = e.as<winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs>();
+		tr.Handled(true);
+	}
+
 	void MainWindow::OnLoad(IInspectable, IInspectable)
 	{
 		auto topnv = Content().as<NavigationView>();
@@ -52,6 +111,7 @@ namespace winrt::VisualWinUI3::implementation
 				fr.Navigate(winrt::xaml_typename<winrt::VisualWinUI3::MainPage>());
 				fr.Content().as<winrt::VisualWinUI3::MainPage>().wnd(wnd());
 			}
+
 			/*
 			topnv.KeyDown([this](IInspectable const&, Microsoft::UI::Xaml::Input::KeyRoutedEventArgs const& a)
 				{

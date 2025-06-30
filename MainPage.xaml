@@ -8,13 +8,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-        <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <MenuBar HorizontalAlignment="Stretch" x:Name="menu" Grid.Column="0">
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Stretch">
+            <MenuBar HorizontalAlignment="Stretch" x:Name="menu" >
                 <MenuBarItem Title="File" >
                     <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >
                         <MenuFlyoutItem.Icon>
@@ -57,20 +59,17 @@
                 </MenuBarItem>
             </MenuBar>
 
-            <DropDownButton  Grid.Column="1" Margin="0,0,10,0">
-                <DropDownButton.Content>
-                    <FontIcon Glyph="&#xE793;"/>
-                </DropDownButton.Content>
-                <DropDownButton.Flyout>
-                    <MenuFlyout Placement="Bottom">
-                        <MenuFlyoutItem Text="{x:Bind txt(12)}" Click="OnDefault"/>
-                        <MenuFlyoutItem Text="{x:Bind txt(13)}" Click="OnLight"/>
-                        <MenuFlyoutItem Text="{x:Bind txt(14)}" Click="OnDark"/>
-                    </MenuFlyout>
-                </DropDownButton.Flyout>
-            </DropDownButton>
+            <TreeView x:Name="TreeView" Margin="0,5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            </TreeView>
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch">
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Stretch">
+            <ListView x:Name="ListView"></ListView>
+        </StackPanel>
 
 
-        </Grid>
-    </StackPanel>
+    </Grid>
 </Page>
