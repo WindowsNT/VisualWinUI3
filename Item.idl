@@ -1,0 +1,14 @@
+namespace VisualWinUI3
+{
+	[default_interface]
+	runtimeclass Item : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+	{
+			Item();
+			String Name1;
+			String Name2;
+			String Source;
+			Boolean Sel{ get; set; };
+			Microsoft.UI.Xaml.Media.Brush ColorX{ get; };
+
+	}
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="VisualWinUI3.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:VisualWinUI3"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="VisualWinUI3">
+
+
+
+    <NavigationView x:Name="xMain" PaneDisplayMode="LeftCompact" Loaded="OnLoad" ItemInvoked="ItemInvoked" IsSettingsVisible="True"  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <NavigationView.MenuItems>
+            <NavigationViewItem  Icon="Link" Content="Main" x:Name="ViewMain" >
+                <NavigationViewItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="F2" />
+                </NavigationViewItem.KeyboardAccelerators>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+        <Frame x:Name="contentFrame"/>
+
+        <NavigationView.PaneFooter>
+            <StackPanel Orientation="Vertical">
+                <NavigationViewItem Icon="Help" Content="{x:Bind txt(16);}" />
+            </StackPanel>
+        </NavigationView.PaneFooter>
+    
+        
+    </NavigationView>
+
+
+</Window>

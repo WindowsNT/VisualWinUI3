@@ -1,0 +1,11 @@
+namespace VisualWinUI3
+{
+    [default_interface]
+    runtimeclass MainPage : Microsoft.UI.Xaml.Controls.Page, Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+    {
+        MainPage();
+        static String txt(Int32 sidx);
+        void Refresh();
+		Int64 wnd;
+    }
+}
