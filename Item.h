@@ -16,6 +16,18 @@ namespace winrt::VisualWinUI3::implementation
 		double _d2 = 0.0;
         std::wstring _n1;
         std::wstring _n2;
+        // xitems
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::hstring> _xitems = single_threaded_observable_vector<winrt::hstring>();
+        void xitems(winrt::Windows::Foundation::Collections::IObservableVector<winrt::hstring> v)
+        {
+            _xitems = v;
+		}
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::hstring> xitems()
+        {
+            return _xitems;
+		}
+
+
         hstring Name1()
         {
             return _n1.c_str();
@@ -104,6 +116,8 @@ namespace winrt::VisualWinUI3::implementation
         }
         winrt::event<Microsoft::UI::Xaml::Data::PropertyChangedEventHandler> m_propertyChanged;
 
+
+        winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> ComboItems();
 
     };
 }

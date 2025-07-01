@@ -13,6 +13,8 @@ namespace VisualWinUI3
 			String Name2;
 			Boolean Sel{ get; set; };
 			Microsoft.UI.Xaml.Media.Brush ColorX{ get; };
+			Windows.Foundation.Collections.IObservableVector<String> xitems;
+			Windows.Foundation.Collections.IObservableVector<Item> ComboItems { get; };
 
 	}
 }

@@ -8,6 +8,18 @@ extern std::map<HWND, winrt::Windows::Foundation::IInspectable> windows;
 
 namespace winrt::VisualWinUI3::implementation
 {
+    winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> Item::ComboItems()
+    {
+        auto children = single_threaded_observable_vector<VisualWinUI3::Item>();
+        for(auto e : _xitems)
+        {
+            VisualWinUI3::Item item;
+            item.Name1(e);
+            children.Append(item);
+		}
+        return children;
+    }
+
     void Item::Number0(double n)
     {
         _d0 = n;

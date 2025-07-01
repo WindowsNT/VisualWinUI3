@@ -39,6 +39,7 @@ enum PROPERTY_TYPE
 	PT_STRING,
 	PT_INT,
 	PT_DOUBLE,
+	PT_LIST,
 };
 
 class STRING_PROPERTY : public PROPERTY
@@ -82,6 +83,32 @@ class INT_PROPERTY : public PROPERTY
 		def = el.vv("def").GetValueLongLong(0);
 		mmin = el.vv("min").GetValueLongLong(-1000);
 		mmax = el.vv("max").GetValueLongLong(1000);
+	}
+};
+
+class LIST_PROPERTY : public PROPERTY
+{
+public:
+
+	std::vector<std::wstring> Items;
+	size_t SelectedIndex = 0;
+	size_t DefaultIndex = 0;
+
+	virtual void Ser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Ser(el);
+		// Serialize list items here if needed
+		el.vv("s").SetValueULongLong(SelectedIndex);
+		el.vv("d").SetValueULongLong(DefaultIndex);
+	}
+
+
+	virtual void Unser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Unser(el);
+		// Deserialize list items here if needed
+		SelectedIndex = el.vv("s").GetValueULongLong(0);
+		DefaultIndex = el.vv("d").GetValueULongLong(0);
 	}
 };
 
@@ -164,6 +191,14 @@ public:
 	}
 	virtual void Unser(XML3::XMLElement& el) override;
 
+	virtual 	void Select()
+	{
+	}
+
+	virtual 	void Unselect()
+	{
+	}
+
 };
 
 void GenericTap(winrt::Windows::Foundation::IInspectable);
@@ -193,6 +228,18 @@ class ITEM_STACKPANEL : public XITEM
 
 			ApplyPropertiesFor(X.as<UIElement>(), properties);
 			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
+			for (auto& p : properties)
+			{
+				if (p->n == L"Orientation")
+				{
+					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+					if (op)
+					{
+						X.Orientation((winrt::Microsoft::UI::Xaml::Controls::Orientation)op->SelectedIndex);
+					}
+				}
+			}
+
 		}
 
 		virtual void LoadProperties() override
@@ -205,6 +252,18 @@ class ITEM_STACKPANEL : public XITEM
 			using namespace Windows::UI; 
 			
 			properties.clear();
+			if (1)
+			{
+				if (1)
+				{
+					std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
+					op->g = L"StackPanel";
+					op->n = L"Orientation";
+					op->Items = { L"Vertical", L"Horizontal" };
+					properties.push_back(op);
+
+				}
+			}
 			if (1)
 			{
 				auto uip = CreatePropertiesFor(X.as<FrameworkElement>());
@@ -236,21 +295,45 @@ class ITEM_STACKPANEL : public XITEM
 			if (properties.empty())
 				LoadProperties();
 
-			X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+			X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
 				{
 					GenericTap(t);
+					teh.Handled(true);
 				});
-			X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+			X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
 				{
 					GenericTap(t);
+					teh.Handled(true);
 				});
 
+			X.Orientation(winrt::Microsoft::UI::Xaml::Controls::Orientation::Vertical);
 			X.Tag(box_value((long long)this));
-			X.BorderBrush(SolidColorBrush(Colors::Blue()));
-			winrt::Microsoft::UI::Xaml::Thickness th = { 1, 1, 1, 1 };
-			X.BorderThickness(th);
-			X.Background(SolidColorBrush(Colors::LightCoral()));
+			X.Background(SolidColorBrush(Colors::Transparent()));
 			return X;
+		}
+
+		void Select()
+		{
+			using namespace winrt::Microsoft::UI::Xaml::Media;
+			using namespace winrt;
+			using namespace Microsoft::UI::Xaml;
+			using namespace Microsoft::UI::Xaml::Controls;
+			using namespace Microsoft::UI::Xaml::Media;
+			using namespace Windows::UI;
+
+			X.Background(SolidColorBrush(Colors::Red()));
+		}
+
+		void Unselect()
+		{
+			using namespace winrt::Microsoft::UI::Xaml::Media;
+			using namespace winrt;
+			using namespace Microsoft::UI::Xaml;
+			using namespace Microsoft::UI::Xaml::Controls;
+			using namespace Microsoft::UI::Xaml::Media;
+			using namespace Windows::UI;
+
+			X.Background(SolidColorBrush(Colors::Transparent()));
 		}
 };
 
@@ -320,18 +403,50 @@ public:
 		if (properties.empty())
 			LoadProperties();
 
-		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
 			{
 				GenericTap(t);
+				teh.Handled(true);
 			});
-		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
 			{
 				GenericTap(t);
+				teh.Handled(true);
 			});
 
 		X.Tag(box_value((long long)this));
 		X.Content(winrt::box_value(L"Button"));
+		xb = std::make_shared<winrt::Microsoft::UI::Xaml::Media::Brush>(X.Background());
 		return X;
+	}
+
+	std::shared_ptr<winrt::Microsoft::UI::Xaml::Media::Brush> xb;
+
+
+
+	void Select()
+	{
+		using namespace winrt::Microsoft::UI::Xaml::Media;
+		using namespace winrt;
+		using namespace Microsoft::UI::Xaml;
+		using namespace Microsoft::UI::Xaml::Controls;
+		using namespace Microsoft::UI::Xaml::Media;
+		using namespace Windows::UI;
+
+		X.Background(SolidColorBrush(Colors::Red()));
+	}
+
+	void Unselect()
+	{
+		using namespace winrt::Microsoft::UI::Xaml::Media;
+		using namespace winrt;
+		using namespace Microsoft::UI::Xaml;
+		using namespace Microsoft::UI::Xaml::Controls;
+		using namespace Microsoft::UI::Xaml::Media;
+		using namespace Windows::UI;
+
+		if (xb)
+			X.Background(*xb);
 	}
 };
 

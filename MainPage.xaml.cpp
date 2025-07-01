@@ -158,6 +158,20 @@ namespace winrt::VisualWinUI3::implementation
 				item.Number2(double_type->mmax);
 				children.Append(item);
 			}
+			auto list_type = std::dynamic_pointer_cast<LIST_PROPERTY>(pro);
+			if (list_type)
+			{
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)list_type.get());
+				item.Type(PT_LIST);
+				auto its = item.xitems();
+				for(auto& e : list_type->Items)
+				{
+					its.Append(e.c_str());
+				}
+				item.Name1(pro->n);
+				children.Append(item);
+			}
 		}
 
 		return children;
@@ -213,6 +227,18 @@ namespace winrt::VisualWinUI3::implementation
 
 extern std::map<HWND, winrt::Windows::Foundation::IInspectable> windows;
 
+void UnselectAll(std::shared_ptr<XITEM> r)
+{
+	if (!r)
+		return;
+
+	r->Unselect();
+	for (auto& c : r->children)
+	{
+		UnselectAll(c);
+	}
+}
+
 bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit)
 {
 	if (!r || !xit)
@@ -221,6 +247,7 @@ bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit)
 	if (r.get() == xit)
 	{
 		SelectedItem = r;
+		SelectedItem->Select();
 		return true;
 	}
 
@@ -249,6 +276,7 @@ void GenericTap(winrt::Windows::Foundation::IInspectable it)
 		if (!main_page)
 			continue;
 
+
 		auto ui = it.as<winrt::Microsoft::UI::Xaml::FrameworkElement>();
 		if (!ui)
 			continue;
@@ -266,6 +294,7 @@ void GenericTap(winrt::Windows::Foundation::IInspectable it)
 			continue;
 		if (!prj->root)
 			continue;
+		UnselectAll(prj->root);
 
 		if (RootLoop(prj->root, ir))
 		{

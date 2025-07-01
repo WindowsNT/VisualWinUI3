@@ -219,7 +219,7 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 			what = p->n;
 
 		auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-		if (opx && opx->value != opx->def)
+		if (opx && opx->value != opx->def && !std::isnan(opx->value))
 		{
 			auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
 			op.SetValueDouble(opx->value);
