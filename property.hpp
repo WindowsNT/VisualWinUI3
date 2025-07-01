@@ -115,17 +115,28 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <st
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e);
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props);
 void XMLPropertiesFor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
+void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
 
 
-class XITEM
+class XITEM : public SERIALIZABLE
 {
 public:
 
 	std::wstring ElementName; // Say, "StackPanel"
 	std::vector<std::shared_ptr<PROPERTY>> properties;
 	std::vector<std::shared_ptr<XITEM>> children;
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create() = 0;
-	virtual void ApplyProperties() = 0;
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create()
+	{
+		return nullptr;
+	}
+	virtual void LoadProperties()
+	{
+
+	}
+	virtual void ApplyProperties()
+	{
+
+	}
 
 	virtual XML3::XMLElement SaveEl()
 	{
@@ -140,6 +151,19 @@ public:
 		}
 		return ee;
 	}
+
+	virtual void Ser(XML3::XMLElement& el) override
+	{
+		el.SetElementName(ElementName.c_str());
+		XMLPropertiesFor(el, properties);
+		for (auto& ch : children)
+		{
+			XML3::XMLElement& eee = el.AddElement(XML3::XMLU(ch->ElementName.c_str()).bc());
+			ch->Ser(eee);
+		}
+	}
+	virtual void Unser(XML3::XMLElement& el) override;
+
 };
 
 void GenericTap(winrt::Windows::Foundation::IInspectable);
@@ -171,15 +195,15 @@ class ITEM_STACKPANEL : public XITEM
 			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		}
 
-		virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+		virtual void LoadProperties() override
 		{
 			using namespace winrt::Microsoft::UI::Xaml::Media;
 			using namespace winrt;
 			using namespace Microsoft::UI::Xaml;
 			using namespace Microsoft::UI::Xaml::Controls;
 			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI;
-
+			using namespace Windows::UI; 
+			
 			properties.clear();
 			if (1)
 			{
@@ -198,8 +222,25 @@ class ITEM_STACKPANEL : public XITEM
 					properties.push_back(p);
 				}
 			}
+		}
+
+		virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+		{
+			using namespace winrt::Microsoft::UI::Xaml::Media;
+			using namespace winrt;
+			using namespace Microsoft::UI::Xaml;
+			using namespace Microsoft::UI::Xaml::Controls;
+			using namespace Microsoft::UI::Xaml::Media;
+			using namespace Windows::UI;
+
+			if (properties.empty())
+				LoadProperties();
 
 			X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+				{
+					GenericTap(t);
+				});
+			X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
 				{
 					GenericTap(t);
 				});
@@ -208,6 +249,7 @@ class ITEM_STACKPANEL : public XITEM
 			X.BorderBrush(SolidColorBrush(Colors::Blue()));
 			winrt::Microsoft::UI::Xaml::Thickness th = { 1, 1, 1, 1 };
 			X.BorderThickness(th);
+			X.Background(SolidColorBrush(Colors::LightCoral()));
 			return X;
 		}
 };
@@ -237,7 +279,8 @@ public:
 		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+
+	virtual void LoadProperties() override
 	{
 		using namespace winrt::Microsoft::UI::Xaml::Media;
 		using namespace winrt;
@@ -245,7 +288,6 @@ public:
 		using namespace Microsoft::UI::Xaml::Controls;
 		using namespace Microsoft::UI::Xaml::Media;
 		using namespace Windows::UI;
-
 		properties.clear();
 		if (1)
 		{
@@ -255,7 +297,6 @@ public:
 				properties.push_back(p);
 			}
 		}
-
 		if (1)
 		{
 			auto uip = CreatePropertiesFor(X.as<UIElement>());
@@ -264,8 +305,26 @@ public:
 				properties.push_back(p);
 			}
 		}
+	}
+
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+	{
+		using namespace winrt::Microsoft::UI::Xaml::Media;
+		using namespace winrt;
+		using namespace Microsoft::UI::Xaml;
+		using namespace Microsoft::UI::Xaml::Controls;
+		using namespace Microsoft::UI::Xaml::Media;
+		using namespace Windows::UI;
+
+	
+		if (properties.empty())
+			LoadProperties();
 
 		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
+			{
+				GenericTap(t);
+			});
+		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Windows::Foundation::IInspectable)
 			{
 				GenericTap(t);
 			});
@@ -277,3 +336,22 @@ public:
 };
 
 inline std::shared_ptr<XITEM> SelectedItem;
+
+
+inline void XITEM::Unser(XML3::XMLElement& el)
+{
+	children.clear();
+	LoadProperties();
+	LoadXMLPropertiesfor(el, properties);
+	for (auto& e : el)
+	{
+		auto el2 = e.GetElementName();
+		std::shared_ptr<XITEM> ch;
+		if (el2 == "StackPanel")	ch = std::make_shared<ITEM_STACKPANEL>();
+		if (el2 == "Button")	ch = std::make_shared<ITEM_BUTTON>();
+		if (!ch)
+			continue;
+		ch->Unser(e);
+		children.push_back(ch);
+	}
+}

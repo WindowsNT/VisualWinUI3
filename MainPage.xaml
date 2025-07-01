@@ -6,6 +6,7 @@
     xmlns:local="using:VisualWinUI3"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Loaded="PageLoaded"
     mc:Ignorable="d">
 
     <StackPanel Orientation="Vertical">

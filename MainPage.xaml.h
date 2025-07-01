@@ -25,6 +25,7 @@ namespace winrt::VisualWinUI3::implementation
             // Xaml objects should not call InitializeComponent during construction.
             // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
         }
+        void PageLoaded(IInspectable const&, IInspectable const&);
 
         winrt::event_token PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
         {

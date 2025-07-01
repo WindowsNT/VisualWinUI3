@@ -34,7 +34,19 @@ namespace winrt::VisualWinUI3::implementation
 	}
 	void MainPage::OnSave(IInspectable const&, IInspectable const&)
 	{
-
+		if (!project)
+			return;
+		if (!project->root)
+			return;
+		if (project->file.empty())
+		{
+			OnSaveAs(nullptr, nullptr);
+			return;
+		}
+		DeleteFile(project->file.c_str());
+		XML3::XML x(project->file.c_str());
+		project->Ser(x.GetRootElement());
+		x.Save();
 	}
 	void MainPage::OnExit(IInspectable const&, IInspectable const&)
 	{
@@ -42,7 +54,21 @@ namespace winrt::VisualWinUI3::implementation
 	}
 	void MainPage::OnSaveAs(IInspectable const&, IInspectable const&)
 	{
-
+		OPENFILENAME of = { 0 };
+		of.lStructSize = sizeof(of);
+		of.hwndOwner = (HWND)0;
+		of.lpstrFilter = L"*.vwui3\0*.vwui3\0\0";
+		std::vector<wchar_t> fnx(10000);
+		of.lpstrFile = fnx.data();
+		of.nMaxFile = 10000;
+		of.lpstrDefExt = L"vwui3";
+		of.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+		if (!GetSaveFileName(&of))
+			return;
+		project->file = fnx.data();
+		if (project->file.empty())
+			return;
+		OnSave(nullptr, nullptr);
 	}
  
 
@@ -55,6 +81,8 @@ namespace winrt::VisualWinUI3::implementation
 		auto ni = root->Create();
 		if (!ni)
 			return;
+
+		root->ApplyProperties();
 
 		// Add to panel
 		auto ipanel = iroot.as<Panel>();
@@ -73,6 +101,20 @@ namespace winrt::VisualWinUI3::implementation
 		}
 	}
 
+	void MainPage::PageLoaded(IInspectable const&, IInspectable const&)
+	{
+		if (__argc > 1)
+		{
+			if (!project)
+				project = std::make_shared<PROJECT>();
+			if (GetFileAttributes(__wargv[1]) == 0xFFFFFFFF)
+				return;
+			project->file = __wargv[1];
+			XML3::XML xx(project->file.c_str());
+			project->Unser(*xx.GetRootElement().GetChildren()[0]);
+			Build();
+		}
+	}
 
 	void MainPage::Build()
 	{

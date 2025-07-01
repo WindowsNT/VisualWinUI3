@@ -131,8 +131,8 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->n = L"MinWidth";
 		op->mmin = 0.0;
 		op->mmax = 10000;
-		op->value = e.MinWidth();
-		op->def = 0;
+		op->value = std::nan("");
+		op->def = std::nan("");
 		p.push_back(op);
 	}
 	if (1)
@@ -141,8 +141,8 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->n = L"MinHeight";
 		op->mmin = 0.0;
 		op->mmax = 10000;
-		op->value = e.MinHeight();
-		op->def = 0;
+		op->value = std::nan("");
+		op->def = std::nan("");
 		p.push_back(op);
 	}
 
@@ -175,7 +175,7 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vec
 		if (p->n == L"MinWidth")
 		{
 			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-			if (op)
+			if (op && !std::isnan(op->value))
 			{
 				e.MinWidth(op->value);
 			}
@@ -183,12 +183,31 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vec
 		if (p->n == L"MinHeight")
 		{
 			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-			if (op)
+			if (op && !std::isnan(op->value))
 			{
 				e.MinHeight(op->value);
 			}
 		}
 	}
+}
+
+void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props)
+{
+	for (auto& p : props)
+	{
+		auto what = p->xmln;
+		if (what.empty())
+			what = p->n;
+
+		auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+		if (opx)
+		{
+			auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
+			if (op)
+				opx->value = op->GetValueDouble(opx->def);
+		}
+	}
+
 }
 
 void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY>> props)
