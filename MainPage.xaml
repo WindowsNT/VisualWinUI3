@@ -8,68 +8,85 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
+    <StackPanel Orientation="Vertical">
+
+   
+        <MenuBar HorizontalAlignment="Stretch" x:Name="menu" >
+            <MenuBarItem Title="{x:Bind txt(21);}" >
+                <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE78B;"/>
+                    </MenuFlyoutItem.Icon>
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="N" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(8)}" Click="OnOpen">
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE8E5;"/>
+                    </MenuFlyoutItem.Icon>
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="O" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(9)}" Click="OnSave" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE74E;"/>
+                    </MenuFlyoutItem.Icon>
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="S" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(10)}" Click="OnSaveAs" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xE792;"/>
+                    </MenuFlyoutItem.Icon>
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="S" Modifiers="Control,Shift"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="{x:Bind txt(11)}" Click="OnExit" >
+                    <MenuFlyoutItem.Icon>
+                        <FontIcon Glyph="&#xF3B1;"/>
+                    </MenuFlyoutItem.Icon>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="{x:Bind txt(20);}" >
+                <MenuFlyoutSubItem Text="Panel">
+                    <MenuFlyoutItem Text="StackPanel" Click="I_StackPanel" />
+                </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Button">
+                    <MenuFlyoutItem Text="Button" Click="I_Button" />
+                </MenuFlyoutSubItem>
+            </MenuBarItem>
+
+            <MenuBarItem Title="{x:Bind txt(18);}" >
+                <MenuFlyoutItem Text="{x:Bind txt(19);}" Click="E_XAML" >
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="E" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
+        </MenuBar>
+        
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="4*" />
+                <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Stretch">
-            <MenuBar HorizontalAlignment="Stretch" x:Name="menu" >
-                <MenuBarItem Title="File" >
-                    <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE78B;"/>
-                        </MenuFlyoutItem.Icon>
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="N" Modifiers="Control"/>
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="{x:Bind txt(8)}" Click="OnOpen">
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE8E5;"/>
-                        </MenuFlyoutItem.Icon>
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="O" Modifiers="Control"/>
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="{x:Bind txt(9)}" Click="OnSave" >
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE74E;"/>
-                        </MenuFlyoutItem.Icon>
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="S" Modifiers="Control"/>
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutItem Text="{x:Bind txt(10)}" Click="OnSaveAs" >
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xE792;"/>
-                        </MenuFlyoutItem.Icon>
-                        <MenuFlyoutItem.KeyboardAccelerators>
-                            <KeyboardAccelerator Key="S" Modifiers="Control,Shift"/>
-                        </MenuFlyoutItem.KeyboardAccelerators>
-                    </MenuFlyoutItem>
-                    <MenuFlyoutSeparator/>
-                    <MenuFlyoutItem Text="{x:Bind txt(11)}" Click="OnExit" >
-                        <MenuFlyoutItem.Icon>
-                            <FontIcon Glyph="&#xF3B1;"/>
-                        </MenuFlyoutItem.Icon>
-                    </MenuFlyoutItem>
-                </MenuBarItem>
-            </MenuBar>
-
-            <TreeView x:Name="TreeView" Margin="0,5,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            </TreeView>
+        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" x:Name="PutRoot" BorderBrush="Red" VerticalAlignment="Stretch"  BorderThickness="1">
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch">
-        </StackPanel>
-
-        <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Stretch">
-            <ListView x:Name="ListView"></ListView>
+                <ListView x:Name="ListView"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
+                </ListView>
         </StackPanel>
 
 
     </Grid>
+    </StackPanel>
 </Page>

@@ -9,9 +9,13 @@ namespace winrt::VisualWinUI3::implementation
         {
 
         }
+        long long _PropertyX = 0;
+        int _type = 0;
+        double _d0 = 0.0;
+        double _d1 = 0.0;
+		double _d2 = 0.0;
         std::wstring _n1;
         std::wstring _n2;
-        std::wstring _src;
         hstring Name1()
         {
             return _n1.c_str();
@@ -20,10 +24,27 @@ namespace winrt::VisualWinUI3::implementation
         {
             return _n2.c_str();
         }
-        hstring Source()
+        int Type()
         {
-            return _src.c_str();
+            return _type;
+		}
+        double Number0()
+        {
+            return _d0;
+		}
+        double Number1()
+        {
+            return _d1;
+		}
+        double Number2()
+        {
+            return _d2;
         }
+        long long PropertyX()
+        {
+            return _PropertyX;
+		}
+     
 
         void Name1(hstring n)
         {
@@ -34,11 +55,24 @@ namespace winrt::VisualWinUI3::implementation
         {
             _n2 = n.c_str();
         }
-        void Source(hstring n)
+        void Type(int t)
         {
-            _src = n.c_str();
+            _type = t;
+		}
+        void Number0(double n);
+        void Number1(double n)
+        {
+            _d1 = n;
         }
-
+        void Number2(double n)
+        {
+            _d2 = n;
+		}
+        void PropertyX(long long n)
+        {
+            _PropertyX = n;
+        }
+     
         bool Sel()
         {
             return 0;

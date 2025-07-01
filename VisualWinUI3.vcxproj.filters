@@ -12,6 +12,7 @@
   <ItemGroup>
     <Midl Include="MainWindow.idl" />
     <Midl Include="Item.idl" />
+    <Midl Include="ItemSelector.idl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -19,10 +20,13 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="linker.cpp" />
     <ClCompile Include="func.cpp" />
+    <ClCompile Include="ItemSelector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="property.hpp" />
+    <ClInclude Include="ItemSelector.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
@@ -67,5 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="main.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natvis" />
+    <Natvis Include="$(MSBuildThisFileDirectory)..\..\natvis\wil.natstepfilter" />
   </ItemGroup>
 </Project>

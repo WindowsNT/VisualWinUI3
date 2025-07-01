@@ -1,9 +1,10 @@
 #include <pch.h>
 
-
 const wchar_t* ttitle = L"Visual WinUI3";
 std::shared_ptr<XML3::XML> SettingsX;
 std::wstring datafolder;
+
+#include "property.hpp"
 
 
 bool is_light_theme() {
@@ -93,3 +94,117 @@ const wchar_t* s(size_t idx)
         return L"";
     return z_strings[idx];
 }
+
+// **********
+
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e)
+{
+	std::vector<std::shared_ptr<PROPERTY>> p;
+	if (!e)
+		return p;
+
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->g = L"UIElement";
+		op->n = L"Opacity";
+		op->mmin = 0.0;
+		op->mmax = 1.0;
+		op->value = e.Opacity();
+		op->def = 1.0;
+		p.push_back(op);
+	}
+
+	return p;
+}
+
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e)
+{
+	std::vector<std::shared_ptr<PROPERTY>> p;
+	if (!e)
+		return p;
+
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->g = L"FrameworkElement";
+		op->n = L"MinWidth";
+		op->mmin = 0.0;
+		op->mmax = 10000;
+		op->value = e.MinWidth();
+		op->def = 0;
+		p.push_back(op);
+	}
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->n = L"MinHeight";
+		op->mmin = 0.0;
+		op->mmax = 10000;
+		op->value = e.MinHeight();
+		op->def = 0;
+		p.push_back(op);
+	}
+
+	return p;
+}
+
+void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props)
+{
+	if (!e)
+		return;
+	for (auto& p : props)
+	{
+		if (p->n == L"Opacity")
+		{
+			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (op)
+			{
+				e.Opacity(op->value);
+			}
+		}
+	}
+}
+
+void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props)
+{
+	if (!e)
+		return;
+	for (auto& p : props)
+	{
+		if (p->n == L"MinWidth")
+		{
+			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (op)
+			{
+				e.MinWidth(op->value);
+			}
+		}	
+		if (p->n == L"MinHeight")
+		{
+			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (op)
+			{
+				e.MinHeight(op->value);
+			}
+		}
+	}
+}
+
+void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY>> props)
+{
+	for (auto& p : props)
+	{
+		auto what = p->xmln;
+		if (what.empty())
+			what = p->n;
+
+		auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+		if (opx && opx->value != opx->def)
+		{
+			auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+			op.SetValueDouble(opx->value);
+		}
+	}
+}
+

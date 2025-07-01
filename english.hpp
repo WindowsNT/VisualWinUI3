@@ -15,6 +15,10 @@ L"Dark",
 L"Restart application to apply.",
 L"Help",
 L"File",
+L"Export",
+L"XAML",
+L"Insert",
+L"File",
 };
 
-#define MAX_LANG 17
+#define MAX_LANG 21

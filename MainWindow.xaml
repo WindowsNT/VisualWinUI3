@@ -12,6 +12,14 @@
 
 
     <NavigationView x:Name="xMain" PaneDisplayMode="LeftCompact" Loaded="OnLoad" ItemInvoked="ItemInvoked" IsSettingsVisible="True"  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <NavigationView.Resources>
+            <DataTemplate x:Key="DoubleTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <TextBlock Text="{x:Bind Name1}" />
+                    <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}"/>
+                </StackPanel>
+            </DataTemplate>
+        </NavigationView.Resources>
         <NavigationView.MenuItems>
             <NavigationViewItem  Icon="Link" Content="Main" x:Name="ViewMain" >
                 <NavigationViewItem.KeyboardAccelerators>
