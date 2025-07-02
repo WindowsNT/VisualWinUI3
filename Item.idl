@@ -18,5 +18,7 @@ namespace VisualWinUI3
 			Windows.Foundation.Collections.IObservableVector<String> xitems;
 			Windows.Foundation.Collections.IObservableVector<Item> ComboItems { get; };
 
+			Windows.Foundation.Collections.IObservableVector<Item> TVChildren{ get; };
+
 	}
 }

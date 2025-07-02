@@ -8,6 +8,18 @@ extern std::map<HWND, winrt::Windows::Foundation::IInspectable> windows;
 
 namespace winrt::VisualWinUI3::implementation
 {
+
+    winrt::Windows::Foundation::Collections::IObservableVector<VisualWinUI3::Item> Item::TVChildren()
+    {
+        auto children = single_threaded_observable_vector<VisualWinUI3::Item>();
+        for (auto pro2 : _children)
+        {
+            VisualWinUI3::Item item;
+			children.Append(item);
+        }
+        return children;
+    }
+
     winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> Item::ComboItems()
     {
         auto children = single_threaded_observable_vector<VisualWinUI3::Item>();
@@ -112,6 +124,46 @@ namespace winrt::VisualWinUI3::implementation
 
         }
 
+    }
+
+    void Item::Sel(bool s)
+    {
+        _sel = s;
+
+        // Apply
+        for (auto& wi : windows)
+        {
+            auto the_window = wi.second.as<winrt::VisualWinUI3::MainWindow>();
+
+            // Find the MainPage for it
+            auto tnv = the_window.Content().as<winrt::Microsoft::UI::Xaml::Controls::NavigationView>();
+            if (!tnv)
+                continue;
+
+            auto fr = tnv.FindName(L"contentFrame").as<winrt::Microsoft::UI::Xaml::Controls::Frame>();
+            if (!fr)
+                continue;
+            auto main_page = fr.Content().as<winrt::VisualWinUI3::MainPage>();
+            if (!main_page)
+                continue;
+
+            // Find the item
+            if (!SelectedItem)
+                continue;
+
+            for (auto& props : SelectedItem->properties)
+            {
+                if ((long long)props.get() == _PropertyX)
+                {
+                    if (props->S == s)
+						return; // No change
+                    props->S = s;
+                    main_page.Refresh();
+                    return;
+                }
+            }
+
+        }
     }
 
 

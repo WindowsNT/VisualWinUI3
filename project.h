@@ -21,7 +21,7 @@ class PROJECT : public SERIALIZABLE
 		{
 			auto eln = el.GetElementName();
 			if (eln == "StackPanel")	
-				root = std::make_shared<ITEM_STACKPANEL>();
+				root = CreateXItemStackPanel();
 			if (root)
 				root->Unser(el);
 		}

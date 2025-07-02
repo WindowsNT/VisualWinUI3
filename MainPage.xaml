@@ -61,7 +61,14 @@
                 <MenuFlyoutSubItem Text="Button">
                     <MenuFlyoutItem Text="Button" Click="I_Button" />
                 </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Text">
+                    <MenuFlyoutItem Text="TextBlock" Click="I_TextBlock" />
+                </MenuFlyoutSubItem>
             </MenuBarItem>
+
+            <MenuBarItem Title="{x:Bind txt(23);}" x:Name="MenuRootSelect" >
+            </MenuBarItem>
+
 
             <MenuBarItem Title="{x:Bind txt(18);}" >
                 <MenuFlyoutItem Text="{x:Bind txt(19);}" Click="E_XAML" >
@@ -86,8 +93,12 @@
                 <ListView x:Name="ListView"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
                 </ListView>
         </StackPanel>
-
-
-    </Grid>
+<!--
+            <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Stretch">
+                <TreeView x:Name="TreeView"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
+                </TreeView>
+            </StackPanel>
+-->
+        </Grid>
     </StackPanel>
 </Page>

@@ -29,6 +29,30 @@ namespace winrt::VisualWinUI3::implementation
                 auto root = w.second.as<winrt::VisualWinUI3::MainWindow>();
 				auto top = root.Content().as<winrt::Microsoft::UI::Xaml::Controls::NavigationView>();
 
+                if (it.TVChildren().Size() > 0)
+                {
+                    auto r_tree = top.Resources().TryLookup(winrt::box_value(L"TreeHeaderTemplate"));
+                    if (r_tree)
+                    {
+                        auto template1 = r_tree.try_as<winrt::Microsoft::UI::Xaml::DataTemplate>();
+                        if (template1)
+                        {
+                            return template1;
+                        }
+                    }
+				}
+                if (it.Type() == PT_HEADER)
+                {
+                    auto r_double = top.Resources().TryLookup(winrt::box_value(L"HeaderTemplate"));
+                    if (r_double)
+                    {
+                        auto template1 = r_double.try_as<winrt::Microsoft::UI::Xaml::DataTemplate>();
+                        if (template1)
+                        {
+                            return template1;
+                        }
+                    }
+                }
                 if (it.Type() == PT_DOUBLE)
                 {
                     auto r_double = top.Resources().TryLookup(winrt::box_value(L"DoubleTemplate"));

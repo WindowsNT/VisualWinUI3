@@ -161,6 +161,8 @@
       <DependentUpon>BlankWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="FrameworkElement.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemSelector.cpp" />
@@ -169,6 +171,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="Panel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
@@ -183,6 +186,9 @@
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
     </ClCompile>
+    <ClCompile Include="StackPanel.cpp" />
+    <ClCompile Include="TextBlock.cpp" />
+    <ClCompile Include="UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Midl Include="BlankWindow.idl">

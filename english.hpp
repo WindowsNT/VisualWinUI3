@@ -19,6 +19,9 @@ L"Export",
 L"XAML",
 L"Insert",
 L"File",
+L"Root",
+L"Select",
+L"Delete",
 };
 
-#define MAX_LANG 21
+#define MAX_LANG 24

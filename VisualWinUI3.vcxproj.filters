@@ -21,6 +21,24 @@
     <ClCompile Include="linker.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="ItemSelector.cpp" />
+    <ClCompile Include="UIElement.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameworkElement.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="StackPanel.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBlock.cpp">
+      <Filter>Specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -54,6 +72,9 @@
   <ItemGroup>
     <Filter Include="Assets">
       <UniqueIdentifier>{940b1990-57e9-4fbb-a9a9-f7503ed66c3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Specific">
+      <UniqueIdentifier>{764b2f40-8dae-4d40-a394-1ba890c1c9ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,8 @@ namespace winrt::VisualWinUI3::implementation
             // See https://github.com/microsoft/cppwinrt/tree/master/nuget#initializecomponent
         }
         void PageLoaded(IInspectable const&, IInspectable const&);
+        void SelectClick(IInspectable const&, IInspectable const&);
+
 
         winrt::event_token PropertyChanged(winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventHandler const& handler)
         {
@@ -63,12 +65,13 @@ namespace winrt::VisualWinUI3::implementation
 
      
         void Build();
-        void Build(winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root);
+        void Build(winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root);
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> PropertyItems();
 		winrt::Microsoft::UI::Xaml::Controls::DataTemplateSelector PropertyTypeSelector();
 
         void I_StackPanel(IInspectable const&, IInspectable const&);
         void I_Button(IInspectable const&, IInspectable const&);
+        void I_TextBlock(IInspectable const&, IInspectable const&);
         void E_XAML(IInspectable const&, IInspectable const&);
 
     };

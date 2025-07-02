@@ -30,6 +30,8 @@ namespace winrt::VisualWinUI3::implementation
             return _xitems;
 		}
 
+		std::vector<VisualWinUI3::Item> _children;
+        winrt::Windows::Foundation::Collections::IObservableVector<VisualWinUI3::Item> TVChildren();
 
         hstring Name1()
         {
@@ -104,14 +106,13 @@ namespace winrt::VisualWinUI3::implementation
         {
             _PropertyX = n;
         }
-     
+
+        bool _sel = 0;
         bool Sel()
         {
-            return 0;
+            return _sel;
         }
-        void Sel(bool)
-        {
-        }
+        void Sel(bool s);
 
 
         winrt::Microsoft::UI::Xaml::Media::Brush ColorX()

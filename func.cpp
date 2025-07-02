@@ -97,99 +97,9 @@ const wchar_t* s(size_t idx)
 
 // **********
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e)
-{
-	std::vector<std::shared_ptr<PROPERTY>> p;
-	if (!e)
-		return p;
 
-	if (1)
-	{
-		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
-		op->g = L"UIElement";
-		op->n = L"Opacity";
-		op->mmin = 0.0;
-		op->mmax = 1.0;
-		op->value = e.Opacity();
-		op->def = 1.0;
-		p.push_back(op);
-	}
 
-	return p;
-}
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e)
-{
-	std::vector<std::shared_ptr<PROPERTY>> p;
-	if (!e)
-		return p;
-
-	if (1)
-	{
-		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
-		op->g = L"FrameworkElement";
-		op->n = L"MinWidth";
-		op->mmin = 0.0;
-		op->mmax = 10000;
-		op->value = std::nan("");
-		op->def = std::nan("");
-		p.push_back(op);
-	}
-	if (1)
-	{
-		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
-		op->n = L"MinHeight";
-		op->mmin = 0.0;
-		op->mmax = 10000;
-		op->value = std::nan("");
-		op->def = std::nan("");
-		p.push_back(op);
-	}
-
-	return p;
-}
-
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props)
-{
-	if (!e)
-		return;
-	for (auto& p : props)
-	{
-		if (p->n == L"Opacity")
-		{
-			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-			if (op)
-			{
-				e.Opacity(op->value);
-			}
-		}
-	}
-}
-
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props)
-{
-	if (!e)
-		return;
-	for (auto& p : props)
-	{
-		if (p->n == L"MinWidth")
-		{
-			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-			if (op && !std::isnan(op->value))
-			{
-				e.MinWidth(op->value);
-			}
-		}	
-		if (p->n == L"MinHeight")
-		{
-			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-			if (op && !std::isnan(op->value))
-			{
-				e.MinHeight(op->value);
-			}
-		}
-	}
-}
 
 void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props)
 {

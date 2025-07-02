@@ -11,6 +11,9 @@ using namespace Microsoft::UI::Xaml::Controls;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
+void UnselectAll(std::shared_ptr<XITEM> r);
+bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit);
+
 namespace winrt::VisualWinUI3::implementation
 {
     void MainPage::Refresh(const wchar_t* s)
@@ -72,8 +75,37 @@ namespace winrt::VisualWinUI3::implementation
 	}
  
 
+	void MainPage::SelectClick(IInspectable const& c1, IInspectable const&)
+	{
+		long long tg = 0;
+		MenuFlyoutItem mfi = c1.try_as<MenuFlyoutItem>();
+		if (mfi)
+		{
+			tg = winrt::unbox_value<long long>(mfi.Tag());
+		}
+		MenuFlyoutSubItem mfsi = c1.try_as<MenuFlyoutSubItem>();
+		if (mfsi)
+		{
+			tg = winrt::unbox_value<long long>(mfi.Tag());
 
-	void MainPage::Build(UIElement iroot, std::shared_ptr<XITEM> root)
+		}
+		if (tg == 0)
+			return;
+		XITEM* xit = (XITEM*)tg;
+		if (!xit)
+			return;
+
+		if (!project)
+			return;
+		if (!project->root)
+			return;
+		UnselectAll(project->root);
+		RootLoop(project->root, xit);
+		Refresh(L"PropertyItems");
+		Refresh(L"PropertyTypeSelector");
+	}
+
+	void MainPage::Build(UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root)
 	{
 		if (!root || !iroot)
 			return;
@@ -89,15 +121,83 @@ namespace winrt::VisualWinUI3::implementation
 		if (!ipanel)
 			return;
 		auto chi = ipanel.Children();
-		auto sz = chi.Size();
-		chi.Clear();
-		chi = ipanel.Children();
-		sz = chi.Size();
-		chi.Append(ni.as<UIElement>());
+		chi.Append(ni);
+
+		// Add to menu
+		auto mbi = menu_root.try_as<MenuBarItem>();
+		MenuFlyoutSubItem item2;
+		if (mbi)
+		{
+			if (root->children.size())
+			{
+				item2.Text(root->ElementName);
+				item2.Tag(box_value((long long)root.get()));
+				mbi.Items().Append(item2);
+
+				// And put also this 
+				MenuFlyoutItem item;
+				item.Text(root->ElementName);
+				item.Tag(box_value((long long)root.get()));
+				item.Click([&](IInspectable const& c1, IInspectable const& c2)
+					{
+						SelectClick(c1, c2);
+					});
+				item2.Items().Append(item);
+				item2.Items().Append(MenuFlyoutSeparator());
+			}
+			else
+			{
+				MenuFlyoutItem item;
+				item.Text(root->ElementName);
+				item.Tag(box_value((long long)root.get()));
+				item.Click([&](IInspectable const& c1, IInspectable const& c2)
+					{
+						SelectClick(c1, c2);
+					});
+				mbi.Items().Append(item);
+			}
+		}
+		else
+		{
+			// see if it s a MenuFlyoutSubItem
+			auto mfs = menu_root.try_as<MenuFlyoutSubItem>();
+			if (mfs)
+			{
+				if (root->children.size())
+				{
+					item2.Text(root->ElementName);
+					item2.Tag(box_value((long long)root.get()));
+					mfs.Items().Append(item2);
+
+					// And put also this 
+					MenuFlyoutItem item;
+					item.Text(root->ElementName);
+					item.Tag(box_value((long long)root.get()));
+					item.Click([&](IInspectable const& c1, IInspectable const& c2)
+						{
+							SelectClick(c1, c2);
+						});
+					item2.Items().Append(item);
+					item2.Items().Append(MenuFlyoutSeparator());
+
+				}
+				else
+				{
+					MenuFlyoutItem item;
+					item.Text(root->ElementName);
+					item.Tag(box_value((long long)root.get()));
+					item.Click([&](IInspectable const& c1, IInspectable const& c2)
+						{
+							SelectClick(c1, c2);
+						});
+					mfs.Items().Append(item);
+				}
+			}
+		}
 
 		for (auto& r : root->children)
 		{
-			Build(ni,r);
+			Build(ni,r,item2);
 		}
 	}
 
@@ -124,7 +224,10 @@ namespace winrt::VisualWinUI3::implementation
 			return;
 		if (!project->root)
 			return;
-		Build(root,project->root);
+		root.Children().Clear();
+		auto mrs = topnv.FindName(L"MenuRootSelect").as<MenuBarItem>();
+		mrs.Items().Clear();
+		Build(root,project->root,mrs);
 		Refresh(L"PropertyItems");
 		Refresh(L"PropertyTypeSelector");
 	}
@@ -143,9 +246,30 @@ namespace winrt::VisualWinUI3::implementation
 		if (!SelectedItem)
 			return children;
 
+		bool UseTree = 0;
+
 		// Put the properties of this item
+		std::wstring Current_Group;
+		bool CGV = 1;
 		for (auto pro : SelectedItem->properties)
 		{
+			if (pro->g != Current_Group)
+			{
+				// Put the group as well
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)pro.get());
+				item.Type(PT_HEADER);
+				item.Name1(pro->g);
+				item.Sel(pro->S);
+				children.Append(item);
+				if (UseTree)
+					children = item.TVChildren();
+				CGV = pro->S;
+				Current_Group = pro->g;
+			}
+
+			if (CGV == 0)
+				continue; // skip this group
 			auto double_type = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(pro);
 			if (double_type)
 			{
@@ -207,13 +331,13 @@ namespace winrt::VisualWinUI3::implementation
 			project = std::make_shared<PROJECT>();
 		if (!project->root)
 		{
-			project->root = std::make_shared<ITEM_STACKPANEL>();
+			project->root = CreateXItemStackPanel();
 			SelectedItem = project->root;
 		}
 		else
 		if (SelectedItem)
 		{
-			auto j = std::make_shared<ITEM_STACKPANEL>();
+			auto j = CreateXItemStackPanel();
 			SelectedItem->children.push_back(j);
 			SelectedItem = j;
 		}
@@ -226,11 +350,24 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project->root) return;
 		if (!SelectedItem) return;
 
-		auto j = std::make_shared<ITEM_BUTTON>();
+		auto j = CreateXItemButton();
 		SelectedItem->children.push_back(j);
 		SelectedItem = j;
 		Build();
 	}
+
+	void MainPage::I_TextBlock(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemTextBlock();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
 
 }
 
@@ -269,6 +406,8 @@ bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit)
 	}
 	return false;
 }
+
+
 void GenericTap(winrt::Windows::Foundation::IInspectable it)
 {
 	for (auto& wi : windows)

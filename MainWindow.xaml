@@ -13,22 +13,32 @@
 
     <NavigationView x:Name="xMain" PaneDisplayMode="LeftCompact" Loaded="OnLoad" ItemInvoked="ItemInvoked" IsSettingsVisible="True"  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <NavigationView.Resources>
+            <DataTemplate x:Key="TreeHeaderTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <TextBlock Text="{x:Bind Name1}"  />
+                </StackPanel>
+            </DataTemplate>
+            <DataTemplate x:Key="HeaderTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <CheckBox Content="{x:Bind Name1}" FontSize="15" Foreground="Red" Margin="5" IsChecked="{x:Bind Sel,Mode=TwoWay}"/>
+                </StackPanel>
+            </DataTemplate>
             <DataTemplate x:Key="StringTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
-                    <TextBlock Text="{x:Bind Name1}" />
-                    <TextBox  Text="{x:Bind Value0,Mode=TwoWay}"/>
+                    <TextBlock Text="{x:Bind Name1}" Margin="5" />
+                    <TextBox  Text="{x:Bind Value0,Mode=TwoWay}" Margin="5"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="DoubleTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
-                    <TextBlock Text="{x:Bind Name1}" />
-                    <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}"/>
+                    <TextBlock Text="{x:Bind Name1}" Margin="5" />
+                    <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Margin="5"  Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="ListTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
-                    <TextBlock Text="{x:Bind Name1}" />
-                    <ComboBox ItemsSource="{x:Bind ComboItems,Mode=OneWay}" SelectedIndex="{x:Bind Int0,Mode=TwoWay}">
+                    <TextBlock Text="{x:Bind Name1}" Margin="5"/>
+                    <ComboBox ItemsSource="{x:Bind ComboItems,Mode=OneWay}" SelectedIndex="{x:Bind Int0,Mode=TwoWay}" Margin="5">
                         <ComboBox.ItemTemplate>
                             <DataTemplate x:DataType="local:Item">
                                 <TextBlock Text="{x:Bind Name1}" />
