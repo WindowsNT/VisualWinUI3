@@ -199,12 +199,37 @@ void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PRO
 		if (what.empty())
 			what = p->n;
 
-		auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-		if (opx)
+		if (1)
 		{
-			auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
-			if (op)
-				opx->value = op->GetValueDouble(opx->def);
+			auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (opx)
+			{
+				auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
+				opx->value = opx->def;
+				if (op)
+					opx->value = op->GetValueDouble(opx->def);
+			}
+		}
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+			if (opx)
+			{
+				auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
+				if (op)
+					opx->SelectedIndex = op->GetValueLongLong();
+			}
+		}
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
+			if (opx)
+			{
+				auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
+				opx->value = opx->def;
+				if (op)
+					opx->value = op->GetWideValue();
+			}
 		}
 	}
 
@@ -218,12 +243,36 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 		if (what.empty())
 			what = p->n;
 
-		auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-		if (opx && opx->value != opx->def && !std::isnan(opx->value))
+		if (1)
 		{
-			auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
-			op.SetValueDouble(opx->value);
+			auto opx = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (opx && opx->value != opx->def && !std::isnan(opx->value))
+			{
+				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+				op.SetValueDouble(opx->value);
+			}
 		}
+
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+			if (opx)
+			{
+				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+				op.SetValueULongLong(opx->SelectedIndex);
+			}
+		}
+
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
+			if (opx && opx->value != opx->def)
+			{
+				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+				op.SetWideValue(opx->value.c_str());
+			}
+		}
+
 	}
 }
 

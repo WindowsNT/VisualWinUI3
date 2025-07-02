@@ -20,6 +20,101 @@ namespace winrt::VisualWinUI3::implementation
         return children;
     }
 
+    void Item::Int0(long n)
+    {
+        _i0 = n;
+
+        // Apply
+        for (auto& wi : windows)
+        {
+            auto the_window = wi.second.as<winrt::VisualWinUI3::MainWindow>();
+
+            // Find the MainPage for it
+            auto tnv = the_window.Content().as<winrt::Microsoft::UI::Xaml::Controls::NavigationView>();
+            if (!tnv)
+                continue;
+
+            auto fr = tnv.FindName(L"contentFrame").as<winrt::Microsoft::UI::Xaml::Controls::Frame>();
+            if (!fr)
+                continue;
+            auto main_page = fr.Content().as<winrt::VisualWinUI3::MainPage>();
+            if (!main_page)
+                continue;
+
+            // Find the item
+            if (!SelectedItem)
+                continue;
+
+            for (auto& props : SelectedItem->properties)
+            {
+                if ((long long)props.get() == _PropertyX)
+                {
+                    auto list_type = std::dynamic_pointer_cast<LIST_PROPERTY>(props);
+                    if (list_type)
+                    {
+                        if (list_type->SelectedIndex == _i0)
+                            return; // No change
+                        list_type->SelectedIndex = _i0;
+
+                    }
+                    break;
+                }
+            }
+
+            SelectedItem->ApplyProperties();
+
+        }
+
+    }
+
+    void Item::Value0(winrt::hstring n)
+    {
+        _v0 = n;
+
+        // Apply
+        for (auto& wi : windows)
+        {
+            auto the_window = wi.second.as<winrt::VisualWinUI3::MainWindow>();
+
+            // Find the MainPage for it
+            auto tnv = the_window.Content().as<winrt::Microsoft::UI::Xaml::Controls::NavigationView>();
+            if (!tnv)
+                continue;
+
+            auto fr = tnv.FindName(L"contentFrame").as<winrt::Microsoft::UI::Xaml::Controls::Frame>();
+            if (!fr)
+                continue;
+            auto main_page = fr.Content().as<winrt::VisualWinUI3::MainPage>();
+            if (!main_page)
+                continue;
+
+            // Find the item
+            if (!SelectedItem)
+                continue;
+
+            for (auto& props : SelectedItem->properties)
+            {
+                if ((long long)props.get() == _PropertyX)
+                {
+                    auto list_type = std::dynamic_pointer_cast<STRING_PROPERTY>(props);
+                    if (list_type)
+                    {
+                        if (list_type->value == _v0)
+                            return; // No change
+                        list_type->value = _v0;
+
+                    }
+                    break;
+                }
+            }
+
+            SelectedItem->ApplyProperties();
+
+        }
+
+    }
+
+
     void Item::Number0(double n)
     {
         _d0 = n;

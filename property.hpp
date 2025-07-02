@@ -137,10 +137,94 @@ class DOUBLE_PROPERTY : public PROPERTY
 	}
 };
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e);
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props);
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e);
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props);
+
+using namespace winrt::Microsoft::UI::Xaml::Media;
+using namespace winrt;
+using namespace Microsoft::UI::Xaml;
+using namespace Microsoft::UI::Xaml::Controls;
+using namespace Microsoft::UI::Xaml::Media;
+using namespace Windows::UI;
+
+template <typename T>
+void ApplyPropertiesForText(T e, std::vector <std::shared_ptr<PROPERTY>> props)
+{
+	for (auto& p : properties)
+	{
+		if (p->n == L"Text")
+		{
+			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
+			if (op)
+			{
+				e.Text(op->value);
+			}
+		}
+	}
+}
+template <typename T>
+void ApplyPropertiesForContent(T e, std::vector <std::shared_ptr<PROPERTY>> properties)
+{
+	for (auto& p : properties)
+	{
+		if (p->n == L"Content")
+		{
+			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
+			if (op)
+			{
+				e.Content(winrt::box_value(op->value));
+			}
+		}
+	}
+}
+
+
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e);
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e);
+template <typename T>
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForText(T e)
+{
+	std::vector<std::shared_ptr<PROPERTY>> p;
+	if (!e)
+		return p;
+
+	if (1)
+	{
+		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
+		op->n = L"Text";
+		op->value = e.Text();
+		op->def = L"";
+		p.push_back(op);
+	}
+	return p;
+}
+template <typename T>
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForContent(T e,const wchar_t*defv)
+{
+	std::vector<std::shared_ptr<PROPERTY>> p;
+	if (!e)
+		return p;
+
+	if (1)
+	{
+		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
+		op->n = L"Content";
+		if (defv)
+			op->value = defv;
+		try
+		{
+			auto cont = e.Content();
+			op->value = winrt::unbox_value<winrt::hstring>(cont);
+		}
+		catch (...)
+		{
+		}
+		p.push_back(op);
+	}
+	return p;
+}
+
+
 void XMLPropertiesFor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
 void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
 
@@ -219,13 +303,6 @@ class ITEM_STACKPANEL : public XITEM
 
 		virtual void ApplyProperties()
 		{
-			using namespace winrt::Microsoft::UI::Xaml::Media;
-			using namespace winrt;
-			using namespace Microsoft::UI::Xaml;
-			using namespace Microsoft::UI::Xaml::Controls;
-			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI;
-
 			ApplyPropertiesFor(X.as<UIElement>(), properties);
 			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 			for (auto& p : properties)
@@ -244,13 +321,6 @@ class ITEM_STACKPANEL : public XITEM
 
 		virtual void LoadProperties() override
 		{
-			using namespace winrt::Microsoft::UI::Xaml::Media;
-			using namespace winrt;
-			using namespace Microsoft::UI::Xaml;
-			using namespace Microsoft::UI::Xaml::Controls;
-			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI; 
-			
 			properties.clear();
 			if (1)
 			{
@@ -285,13 +355,7 @@ class ITEM_STACKPANEL : public XITEM
 
 		virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
 		{
-			using namespace winrt::Microsoft::UI::Xaml::Media;
-			using namespace winrt;
-			using namespace Microsoft::UI::Xaml;
-			using namespace Microsoft::UI::Xaml::Controls;
-			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI;
-
+			
 			if (properties.empty())
 				LoadProperties();
 
@@ -314,25 +378,11 @@ class ITEM_STACKPANEL : public XITEM
 
 		void Select()
 		{
-			using namespace winrt::Microsoft::UI::Xaml::Media;
-			using namespace winrt;
-			using namespace Microsoft::UI::Xaml;
-			using namespace Microsoft::UI::Xaml::Controls;
-			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI;
-
 			X.Background(SolidColorBrush(Colors::Red()));
 		}
 
 		void Unselect()
 		{
-			using namespace winrt::Microsoft::UI::Xaml::Media;
-			using namespace winrt;
-			using namespace Microsoft::UI::Xaml;
-			using namespace Microsoft::UI::Xaml::Controls;
-			using namespace Microsoft::UI::Xaml::Media;
-			using namespace Windows::UI;
-
 			X.Background(SolidColorBrush(Colors::Transparent()));
 		}
 };
@@ -351,13 +401,7 @@ public:
 
 	virtual void ApplyProperties()
 	{
-		using namespace winrt::Microsoft::UI::Xaml::Media;
-		using namespace winrt;
-		using namespace Microsoft::UI::Xaml;
-		using namespace Microsoft::UI::Xaml::Controls;
-		using namespace Microsoft::UI::Xaml::Media;
-		using namespace Windows::UI;
-
+		ApplyPropertiesForContent(X.as<Button>(), properties);
 		ApplyPropertiesFor(X.as<UIElement>(), properties);
 		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 	}
@@ -365,13 +409,15 @@ public:
 
 	virtual void LoadProperties() override
 	{
-		using namespace winrt::Microsoft::UI::Xaml::Media;
-		using namespace winrt;
-		using namespace Microsoft::UI::Xaml;
-		using namespace Microsoft::UI::Xaml::Controls;
-		using namespace Microsoft::UI::Xaml::Media;
-		using namespace Windows::UI;
 		properties.clear();
+		if (1)
+		{
+			auto uip = CreatePropertiesForContent(X.as<Button>(),L"Button");
+			for (auto& p : uip)
+			{
+				properties.push_back(p);
+			}
+		}
 		if (1)
 		{
 			auto uip = CreatePropertiesFor(X.as<FrameworkElement>());
@@ -392,14 +438,6 @@ public:
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
 	{
-		using namespace winrt::Microsoft::UI::Xaml::Media;
-		using namespace winrt;
-		using namespace Microsoft::UI::Xaml;
-		using namespace Microsoft::UI::Xaml::Controls;
-		using namespace Microsoft::UI::Xaml::Media;
-		using namespace Windows::UI;
-
-	
 		if (properties.empty())
 			LoadProperties();
 
@@ -426,25 +464,11 @@ public:
 
 	void Select()
 	{
-		using namespace winrt::Microsoft::UI::Xaml::Media;
-		using namespace winrt;
-		using namespace Microsoft::UI::Xaml;
-		using namespace Microsoft::UI::Xaml::Controls;
-		using namespace Microsoft::UI::Xaml::Media;
-		using namespace Windows::UI;
-
 		X.Background(SolidColorBrush(Colors::Red()));
 	}
 
 	void Unselect()
 	{
-		using namespace winrt::Microsoft::UI::Xaml::Media;
-		using namespace winrt;
-		using namespace Microsoft::UI::Xaml;
-		using namespace Microsoft::UI::Xaml::Controls;
-		using namespace Microsoft::UI::Xaml::Media;
-		using namespace Windows::UI;
-
 		if (xb)
 			X.Background(*xb);
 	}

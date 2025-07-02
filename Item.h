@@ -11,11 +11,14 @@ namespace winrt::VisualWinUI3::implementation
         }
         long long _PropertyX = 0;
         int _type = 0;
+        long _i0 = 0;
         double _d0 = 0.0;
         double _d1 = 0.0;
 		double _d2 = 0.0;
         std::wstring _n1;
         std::wstring _n2;
+        std::wstring _v0;
+
         // xitems
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::hstring> _xitems = single_threaded_observable_vector<winrt::hstring>();
         void xitems(winrt::Windows::Foundation::Collections::IObservableVector<winrt::hstring> v)
@@ -57,6 +60,14 @@ namespace winrt::VisualWinUI3::implementation
             return _PropertyX;
 		}
      
+        void Int0(long n);
+        void Value0(hstring n);
+
+
+        winrt::hstring ToString() 
+        {
+            return Name1();
+        }
 
         void Name1(hstring n)
         {
@@ -72,6 +83,15 @@ namespace winrt::VisualWinUI3::implementation
             _type = t;
 		}
         void Number0(double n);
+        long Int0()
+        {
+            return _i0;
+		}
+        winrt::hstring Value0()
+        {
+            return _v0.c_str();
+		}
+
         void Number1(double n)
         {
             _d1 = n;

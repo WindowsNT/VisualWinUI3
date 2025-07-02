@@ -164,11 +164,22 @@ namespace winrt::VisualWinUI3::implementation
 				VisualWinUI3::Item item;
 				item.PropertyX((long long)list_type.get());
 				item.Type(PT_LIST);
+				item.Int0((int)list_type->SelectedIndex);
 				auto its = item.xitems();
 				for(auto& e : list_type->Items)
 				{
 					its.Append(e.c_str());
 				}
+				item.Name1(pro->n);
+				children.Append(item);
+			}
+			auto string_type = std::dynamic_pointer_cast<STRING_PROPERTY>(pro);
+			if (string_type)
+			{
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)string_type.get());
+				item.Type(PT_STRING);
+				item.Value0(string_type->value);
 				item.Name1(pro->n);
 				children.Append(item);
 			}

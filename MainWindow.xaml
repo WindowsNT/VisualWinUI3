@@ -13,6 +13,12 @@
 
     <NavigationView x:Name="xMain" PaneDisplayMode="LeftCompact" Loaded="OnLoad" ItemInvoked="ItemInvoked" IsSettingsVisible="True"  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <NavigationView.Resources>
+            <DataTemplate x:Key="StringTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <TextBlock Text="{x:Bind Name1}" />
+                    <TextBox  Text="{x:Bind Value0,Mode=TwoWay}"/>
+                </StackPanel>
+            </DataTemplate>
             <DataTemplate x:Key="DoubleTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" />
@@ -22,7 +28,13 @@
             <DataTemplate x:Key="ListTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" />
-                    <ComboBox ItemsSource="{x:Bind ComboItems,Mode=OneWay}"/>
+                    <ComboBox ItemsSource="{x:Bind ComboItems,Mode=OneWay}" SelectedIndex="{x:Bind Int0,Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="local:Item">
+                                <TextBlock Text="{x:Bind Name1}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
             </DataTemplate>
         </NavigationView.Resources>

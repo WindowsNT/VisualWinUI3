@@ -1,7 +1,7 @@
 namespace VisualWinUI3
 {
 	[default_interface]
-	runtimeclass Item : Microsoft.UI.Xaml.Data.INotifyPropertyChanged
+	runtimeclass Item : Microsoft.UI.Xaml.Data.INotifyPropertyChanged,Windows.Foundation.IStringable
 	{
 			Item();
 			Int64	PropertyX;
@@ -9,6 +9,8 @@ namespace VisualWinUI3
 			Double Number0;
 			Double Number1;
 			Double Number2;
+			Int32 Int0;
+			String Value0;
 			String Name1;
 			String Name2;
 			Boolean Sel{ get; set; };

@@ -41,6 +41,18 @@ namespace winrt::VisualWinUI3::implementation
                         }
                     }
                 }
+                if (it.Type() == PT_STRING)
+                {
+                    auto r_string = top.Resources().TryLookup(winrt::box_value(L"StringTemplate"));
+                    if (r_string)
+                    {
+                        auto template1 = r_string.try_as<winrt::Microsoft::UI::Xaml::DataTemplate>();
+                        if (template1)
+                        {
+                            return template1;
+                        }
+                    }
+                }
                 if (it.Type() == PT_LIST)
                 {
                     auto r_list = top.Resources().TryLookup(winrt::box_value(L"ListTemplate"));
