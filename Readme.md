@@ -4,11 +4,11 @@
 ## Supported elements so far
 * UIElement
 * FrameworkElement
- ** TextBlock
- ** Control
-  *** Button
-  *** TextBox
- ** Panel
-  *** StackPanel
+ * TextBlock
+ * Control
+  * Button
+  * TextBox
+ * Panel
+  * StackPanel
 
 
