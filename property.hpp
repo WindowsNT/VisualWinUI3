@@ -153,6 +153,9 @@ class DOUBLE_PROPERTY : public PROPERTY
 	double value = 0.0;
 	double mmin = 0.0;
 	double mmax = 1.0;
+	double smallchange = 0.1;
+	double largechange = 1.0;
+
 	virtual void Ser(XML3::XMLElement& el) override
 	{
 		PROPERTY::Ser(el);
@@ -160,6 +163,8 @@ class DOUBLE_PROPERTY : public PROPERTY
 		el.vv("def").SetValueDouble(def);
 		el.vv("min").SetValueDouble(mmin);
 		el.vv("max").SetValueDouble(mmax);
+		el.vv("sc").SetValueDouble(smallchange);
+		el.vv("lc").SetValueDouble(largechange);
 	}
 	virtual void Unser(XML3::XMLElement& el) override
 	{
@@ -168,6 +173,8 @@ class DOUBLE_PROPERTY : public PROPERTY
 		def = el.vv("def").GetValueDouble(0.0);
 		mmin = el.vv("min").GetValueDouble(0);
 		mmax = el.vv("max").GetValueDouble(1);
+		smallchange = el.vv("sc").GetValueDouble(0.1);
+		largechange = el.vv("lc").GetValueDouble(1.0);
 	}
 };
 
@@ -201,8 +208,10 @@ public:
 	std::wstring ElementName; // Say, "StackPanel"
 	std::vector<std::shared_ptr<PROPERTY>> properties;
 	std::vector<std::shared_ptr<XITEM>> children;
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int)
+	XITEM* the_par = 0;
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int,XITEM* par)
 	{
+		par;
 		return nullptr;
 	}
 	virtual void LoadProperties()
@@ -213,6 +222,25 @@ public:
 	{
 
 	}
+
+	template <typename T>
+	void AddGridPropertiesIf(XITEM* par)
+	{
+		if (!IsSomeParentGrid(par))
+			return;
+
+		if (1)
+		{
+			auto uip = CreatePropertiesForParentGrid(XX().as<T>());
+			for (auto& p : uip)
+			{
+				p->g = L"Grid";
+				properties.push_back(p);
+			}
+
+		}
+	}
+
 	virtual winrt::Windows::Foundation::IInspectable XX()
 	{
 		return nullptr;
@@ -296,16 +324,27 @@ void GenericTap(winrt::Windows::Foundation::IInspectable);
 
 
 
-
 inline std::shared_ptr<XITEM> SelectedItem;
 
-bool ISXItemStackPanel(std::shared_ptr<XITEM> xit);
-bool ISXItemGrid(std::shared_ptr<XITEM> xit);
+bool ISXItemStackPanel(XITEM* xit);
+bool ISXItemGrid(XITEM* xit);
 std::shared_ptr<XITEM> CreateXItemStackPanel();
 std::shared_ptr<XITEM> CreateXItemGrid();
 std::shared_ptr<XITEM> CreateXItemButton();
 std::shared_ptr<XITEM> CreateXItemTextBlock();
 std::shared_ptr<XITEM> CreateXItemTextBox();
+
+
+inline bool IsSomeParentGrid(XITEM* xit,bool = false)
+{
+	if (!xit)
+		return false;
+	if (ISXItemGrid(xit))
+		return true;
+	if (xit->the_par)
+		return IsSomeParentGrid(xit->the_par,1);
+	return false;
+}
 
 inline void XITEM::Unser(XML3::XMLElement& el)
 {

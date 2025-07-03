@@ -42,11 +42,13 @@ public:
 		AddPropertySet<UIElement>();
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
 	{
 		X = Button();
+		the_par = par;
 		if (properties.empty())
 			LoadProperties();
+		AddGridPropertiesIf<Button>(par);
 
 		if (ForWhat == 0)
 		{
@@ -55,23 +57,22 @@ public:
 
 		X.Tag(box_value((long long)this));
 		X.Content(winrt::box_value(L"Button"));
-		xb = std::make_shared<winrt::Microsoft::UI::Xaml::Media::Brush>(X.Background());
 		return X;
 	}
 
-	std::shared_ptr<winrt::Microsoft::UI::Xaml::Media::Brush> xb;
 
 
 
 	void Select()
 	{
-		X.Background(SolidColorBrush(Colors::Red()));
+		X.BorderBrush(SolidColorBrush(Colors::Red()));
+		X.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
 	}
 
 	void Unselect()
 	{
-		if (xb)
-			X.Background(*xb);
+		X.BorderBrush(nullptr);
+		X.BorderThickness(ThicknessHelper::FromLengths(0,0,0,0));
 	}
 };
 

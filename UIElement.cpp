@@ -15,6 +15,14 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <st
 				e.Opacity(op->value);
 			}
 		}
+		if (p->n == L"Rotation")
+		{
+			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+			if (op)
+			{
+				e.Rotation((float)op->value);
+			}
+		}
 	}
 }
 
@@ -33,10 +41,24 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->n = L"Opacity";
 		op->mmin = 0.0;
 		op->mmax = 1.0;
+		op->smallchange = 0.1;
+		op->largechange = 0.1;
 		op->value = e.Opacity();
 		op->def = 1.0;
 		p.push_back(op);
 	}
-
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->g = L"UIElement";
+		op->n = L"Rotation";
+		op->mmin = 0.0;
+		op->mmax = 360.0;
+		op->smallchange = 1;
+		op->largechange = 10;
+		op->value = e.Rotation();
+		op->def = 0.0;
+		p.push_back(op);
+	}
 	return p;
 }

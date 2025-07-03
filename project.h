@@ -22,6 +22,8 @@ class PROJECT : public SERIALIZABLE
 			auto eln = el.GetElementName();
 			if (eln == "StackPanel")	
 				root = CreateXItemStackPanel();
+			if (eln == "Grid")
+				root = CreateXItemGrid();
 			if (root)
 				root->Unser(el);
 		}

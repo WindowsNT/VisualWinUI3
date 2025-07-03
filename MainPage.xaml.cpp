@@ -155,7 +155,7 @@ namespace winrt::VisualWinUI3::implementation
 		Refresh(L"PropertyTypeSelector");
 	}
 
-	void MainPage::Build(winrt::VisualWinUI3::BlankWindow topbw,UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root,int ForWhat)
+	void MainPage::Build(winrt::VisualWinUI3::BlankWindow topbw,UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root,int ForWhat, std::shared_ptr<XITEM> parentroot)
 	{
 		if (!root)
 			return;
@@ -166,7 +166,7 @@ namespace winrt::VisualWinUI3::implementation
 			return;
 		}
 
-		auto ni = root->Create(ForWhat);
+		auto ni = root->Create(ForWhat,parentroot.get());
 		if (!ni)
 			return;
 
@@ -264,7 +264,7 @@ namespace winrt::VisualWinUI3::implementation
 		}
 		for (auto& r : root->children)
 		{
-			Build(topbw,ni,r,item2,ForWhat);
+			Build(topbw,ni,r,item2,ForWhat,root);
 		}
 	}
 
@@ -294,9 +294,9 @@ namespace winrt::VisualWinUI3::implementation
 			return;
 
 		Panel rootsp = StackPanel();
-		if (ISXItemStackPanel(project->root))
+		if (ISXItemStackPanel(project->root.get()))
 			rootsp = topnv.FindName(L"PutRootSP").as<Panel>();
-		if (ISXItemGrid(project->root))
+		if (ISXItemGrid(project->root.get()))
 			rootsp = topnv.FindName(L"PutRootGR").as<Panel>();
 		rootsp.Children().Clear();
 		auto mrs = topnv.FindName(L"MenuRootSelect").as<MenuBar>();
@@ -305,7 +305,7 @@ namespace winrt::VisualWinUI3::implementation
 		MenuBarItem mrsitem;
 		mrsitem.Title(txt(23).c_str());
 		mrs.Items().Append(mrsitem);
-		Build(nullptr, rootsp, project->root, mrsitem, 0);
+		Build(nullptr, rootsp, project->root, mrsitem, 0,nullptr);
 
 		// Apply properties of the root to rootsp
 		ApplyPropertiesFor(rootsp.as<Panel>(), project->root->properties);
@@ -364,6 +364,8 @@ namespace winrt::VisualWinUI3::implementation
 				item.Number0(double_type->value);
 				item.Number1(double_type->mmin);
 				item.Number2(double_type->mmax);
+				item.Change1(double_type->smallchange);
+				item.Change2(double_type->largechange);
 				children.Append(item);
 			}
 			auto list_type = std::dynamic_pointer_cast<LIST_PROPERTY>(pro);
@@ -419,7 +421,7 @@ namespace winrt::VisualWinUI3::implementation
 		auto cont = bw.Content();
 
 		auto topnv = Content().as<Panel>();
-		Build(bw,nullptr, project->root, nullptr,1);
+		Build(bw,nullptr, project->root, nullptr,1,nullptr);
 		bw.Activate();
 	}
 

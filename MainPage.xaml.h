@@ -102,7 +102,7 @@ namespace winrt::VisualWinUI3::implementation
 
      
         void Build();
-        void Build(winrt::VisualWinUI3::BlankWindow topbw,winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root,int ForWhat);
+        void Build(winrt::VisualWinUI3::BlankWindow topbw,winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root,int ForWhat, std::shared_ptr<XITEM> parentroot);
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> PropertyItems();
 		winrt::Microsoft::UI::Xaml::Controls::DataTemplateSelector PropertyTypeSelector();
 

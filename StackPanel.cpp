@@ -61,11 +61,13 @@ public:
 		AddPropertySet<UIElement>();
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
 	{
 		X = StackPanel();
+		the_par = par;
 		if (properties.empty())
 			LoadProperties();
+		AddGridPropertiesIf<StackPanel>(par);
 
 		if (ForWhat == 0)
 		{
@@ -94,9 +96,9 @@ std::shared_ptr<XITEM> CreateXItemStackPanel()
 	return std::make_shared< ITEM_STACKPANEL>();
 }
 
-bool ISXItemStackPanel(std::shared_ptr<XITEM> xit)
+bool ISXItemStackPanel(XITEM* xit)
 {
 	if (!xit)
 		return false;
-	return std::dynamic_pointer_cast<ITEM_STACKPANEL>(xit) != nullptr;
+	return dynamic_cast<ITEM_STACKPANEL*>(xit) != nullptr;
 }

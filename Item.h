@@ -62,6 +62,27 @@ namespace winrt::VisualWinUI3::implementation
             return _PropertyX;
 		}
      
+
+		double _ch1 = 1.0, _ch2 = 1.0;
+        void Change1(double n)
+        {
+            _ch1 = n;
+            m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs(L"Change1"));
+		}
+        void Change2(double n)
+        {
+            _ch2 = n;
+            m_propertyChanged(*this, winrt::Microsoft::UI::Xaml::Data::PropertyChangedEventArgs(L"Change2"));
+        }
+        double Change1()
+        {
+            return _ch1;
+        }
+        double Change2()
+        {
+            return _ch2;
+		}   
+
         void Int0(long n);
         void Value0(hstring n);
 

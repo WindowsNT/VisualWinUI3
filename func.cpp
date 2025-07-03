@@ -127,7 +127,17 @@ void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PRO
 			{
 				auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
 				if (op)
-					opx->SelectedIndex = op->GetValueLongLong();
+				{
+					auto str = op->GetWideValue();
+					for (size_t i = 0; i < opx->Items.size(); i++)
+					{
+						if (opx->Items[i] == str)
+						{
+							opx->SelectedIndex = i;
+							break;
+						}
+					}
+				}
 			}
 		}
 		if (1)
@@ -198,4 +208,6 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 
 	}
 }
+
+
 

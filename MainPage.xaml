@@ -115,7 +115,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="0" x:Name="PutRootSP">
         </StackPanel>
-        <Grid Grid.Row="1" Grid.Column="0" x:Name="PutRootGR">
+        <Grid Grid.Row="1" Grid.Column="0" x:Name="PutRootGR" >
         </Grid>
 
         <ListView x:Name="ListView" Grid.Row="1" Grid.Column="1"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">

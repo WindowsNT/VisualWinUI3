@@ -32,7 +32,7 @@
             <DataTemplate x:Key="DoubleTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" Margin="5" />
-                    <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Margin="5"  Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}"/>
+                    <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Margin="5"  Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}" SpinButtonPlacementMode="Compact" SmallChange="{x:Bind Change1,Mode=OneWay}" LargeChange="{x:Bind Change2,Mode=OneWay}"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="ColorTemplate" x:DataType="local:Item">

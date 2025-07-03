@@ -64,11 +64,13 @@ public:
 		AddPropertySet<UIElement>();
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
 	{
 		X = TextBlock();
+		the_par = par;
 		if (properties.empty())
 			LoadProperties();
+		AddGridPropertiesIf<TextBlock>(par);
 
 		if (ForWhat == 0)
 		{

@@ -9,6 +9,8 @@ namespace VisualWinUI3
 			Double Number0;
 			Double Number1;
 			Double Number2;
+			Double Change1;
+			Double Change2;
 			Int32 Int0;
 			String Value0;
 			String Name1;
