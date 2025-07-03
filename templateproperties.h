@@ -1,4 +1,19 @@
 template <typename T>
+void ApplyPropertiesForParentGrid(T e, std::vector <std::shared_ptr<PROPERTY>> properties)
+{
+	for (auto& p : properties)
+	{
+		if (p->n == L"Grid.Column")
+		{
+		}
+		if (p->n == L"Grid.Row")
+		{
+		}
+	}
+}
+
+
+template <typename T>
 void ApplyPropertiesForText(T e, std::vector <std::shared_ptr<PROPERTY>> properties)
 {
 	for (auto& p : properties)
@@ -108,6 +123,29 @@ void ApplyPropertiesForFont(T e, std::vector <std::shared_ptr<PROPERTY>> props)
 	}
 }
 
+template <typename T>
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForParentGrid(T e)
+{
+	std::vector<std::shared_ptr<PROPERTY>> p;
+	if (!e)
+		return p;
+
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->n = L"Grid.Column";
+		p.push_back(op);
+	}
+	if (1)
+	{
+		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
+		op->n = L"Grid.Row";
+		p.push_back(op);
+	}
+
+
+	return p;
+}
 
 
 template <typename T>

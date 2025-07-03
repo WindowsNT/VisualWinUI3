@@ -299,7 +299,10 @@ void GenericTap(winrt::Windows::Foundation::IInspectable);
 
 inline std::shared_ptr<XITEM> SelectedItem;
 
+bool ISXItemStackPanel(std::shared_ptr<XITEM> xit);
+bool ISXItemGrid(std::shared_ptr<XITEM> xit);
 std::shared_ptr<XITEM> CreateXItemStackPanel();
+std::shared_ptr<XITEM> CreateXItemGrid();
 std::shared_ptr<XITEM> CreateXItemButton();
 std::shared_ptr<XITEM> CreateXItemTextBlock();
 std::shared_ptr<XITEM> CreateXItemTextBox();
@@ -314,6 +317,7 @@ inline void XITEM::Unser(XML3::XMLElement& el)
 		auto el2 = e.GetElementName();
 		std::shared_ptr<XITEM> ch;
 		if (el2 == "StackPanel")	ch = CreateXItemStackPanel();
+		if (el2 == "Grid")	ch = CreateXItemGrid();
 		if (el2 == "Button")	ch = CreateXItemButton();
 		if (el2 == "TextBlock")	ch = CreateXItemTextBlock();
 		if (el2 == "TextBox")	ch = CreateXItemTextBox();

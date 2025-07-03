@@ -45,6 +45,9 @@
     <ClCompile Include="TextBlock.cpp">
       <Filter>Specific\UIElement\FrameworkElement</Filter>
     </ClCompile>
+    <ClCompile Include="grid.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Panel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

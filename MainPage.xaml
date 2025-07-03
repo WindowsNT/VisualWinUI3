@@ -9,10 +9,17 @@
     Loaded="PageLoaded"
     mc:Ignorable="d">
 
-    <StackPanel Orientation="Vertical">
-
-   
-        <MenuBar HorizontalAlignment="Stretch" x:Name="menu" >
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        
+        <MenuBar Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" x:Name="menu" >
             <MenuBarItem Title="{x:Bind txt(21);}" >
                 <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >
                     <MenuFlyoutItem.Icon>
@@ -75,6 +82,7 @@
             <MenuBarItem Title="{x:Bind txt(20);}" >
                 <MenuFlyoutSubItem Text="Panel">
                     <MenuFlyoutItem Text="StackPanel" Click="I_StackPanel" />
+                    <MenuFlyoutItem Text="Grid" Click="I_Grid" />
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem Text="Button">
                     <MenuFlyoutItem Text="Button" Click="I_Button" />
@@ -83,9 +91,6 @@
                     <MenuFlyoutItem Text="TextBlock" Click="I_TextBlock" />
                     <MenuFlyoutItem Text="TextBox" Click="I_TextBox" />
                 </MenuFlyoutSubItem>
-            </MenuBarItem>
-
-            <MenuBarItem Title="{x:Bind txt(23);}" x:Name="MenuRootSelect" >
             </MenuBarItem>
 
 
@@ -103,26 +108,23 @@
             </MenuBarItem>
 
         </MenuBar>
-        
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="4*" />
-                <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" x:Name="PutRoot" BorderBrush="Red" VerticalAlignment="Top"  BorderThickness="1">
-        </StackPanel>
+        <MenuBar Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" x:Name="MenuRootSelect" >
 
-        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch">
-                <ListView x:Name="ListView"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
-                </ListView>
+        </MenuBar>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" x:Name="PutRootSP">
         </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0" x:Name="PutRootGR">
+        </Grid>
+
+        <ListView x:Name="ListView" Grid.Row="1" Grid.Column="1"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
+        </ListView>
 <!--
             <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Stretch">
                 <TreeView x:Name="TreeView"  ItemsSource="{x:Bind PropertyItems,Mode=OneWay}" ItemTemplateSelector="{x:Bind PropertyTypeSelector}">
                 </TreeView>
             </StackPanel>
 -->
-        </Grid>
-    </StackPanel>
+    </Grid>
 </Page>

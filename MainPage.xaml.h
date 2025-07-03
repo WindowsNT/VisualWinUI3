@@ -107,6 +107,7 @@ namespace winrt::VisualWinUI3::implementation
 		winrt::Microsoft::UI::Xaml::Controls::DataTemplateSelector PropertyTypeSelector();
 
         void I_StackPanel(IInspectable const&, IInspectable const&);
+        void I_Grid(IInspectable const&, IInspectable const&);
         void I_Button(IInspectable const&, IInspectable const&);
         void I_TextBlock(IInspectable const&, IInspectable const&);
         void I_TextBox(IInspectable const&, IInspectable const&);

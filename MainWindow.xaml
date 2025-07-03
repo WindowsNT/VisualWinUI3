@@ -66,20 +66,6 @@
         <NavigationView.PaneFooter>
             <StackPanel Orientation="Vertical">
 <!--                <NavigationViewItem Icon="Help" Content="{x:Bind txt(16);}" />-->
-                <NavigationViewItem Icon="OpenFile" Content="{x:Bind txt(17);}" Tapped="NVI_ChangeLightTapped">
-                    <NavigationViewItem.ContextFlyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >
-                                <MenuFlyoutItem.Icon>
-                                    <FontIcon Glyph="&#xE78B;"/>
-                                </MenuFlyoutItem.Icon>
-                                <MenuFlyoutItem.KeyboardAccelerators>
-                                    <KeyboardAccelerator Key="N" Modifiers="Control"/>
-                                </MenuFlyoutItem.KeyboardAccelerators>
-                            </MenuFlyoutItem>
-                        </MenuFlyout>
-                    </NavigationViewItem.ContextFlyout>
-                </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind txt(6);}" x:Name="NVI_ChangeLight" Tapped="NVI_ChangeLightTapped">
                     <NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE706;" />

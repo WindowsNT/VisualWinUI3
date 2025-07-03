@@ -39,20 +39,6 @@ namespace winrt::VisualWinUI3::implementation
 	}
 
 
-	void MainWindow::OnNew(IInspectable const&, IInspectable const&)
-	{
-		winrt::VisualWinUI3::MainWindow CreateWi();
-		CreateWi();
-
-	}
-	void MainWindow::OnOpen(IInspectable const&, IInspectable const&)
-	{
-
-	}
-	void MainWindow::OnSave(IInspectable const&, IInspectable const&)
-	{
-
-	}
 	void MainWindow::OnExit(IInspectable const&, IInspectable const&)
 	{
 		PostMessage((HWND)wnd(), WM_CLOSE, 0, 0);

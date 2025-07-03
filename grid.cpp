@@ -2,19 +2,19 @@
 #include "property.hpp"
 
 using namespace winrt::Microsoft::UI::Xaml::Controls;
-class ITEM_STACKPANEL : public XITEM
+class ITEM_GRID : public XITEM
 {
 public:
 
-	StackPanel X;
+	Grid X;
 	virtual winrt::Windows::Foundation::IInspectable XX() override
 	{
 		return X;
 	}
 
-	ITEM_STACKPANEL()
+	ITEM_GRID()
 	{
-		ElementName = L"StackPanel";
+		ElementName = L"Grid";
 	}
 
 
@@ -23,39 +23,11 @@ public:
 		ApplyPropertiesFor(X.as<UIElement>(), properties);
 		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		ApplyPropertiesFor(X.as<Panel>(), properties);
-
-
-		for (auto& p : properties)
-		{
-			if (p->n == L"Orientation")
-			{
-				auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
-				if (op)
-				{
-					X.Orientation((winrt::Microsoft::UI::Xaml::Controls::Orientation)op->SelectedIndex);
-				}
-			}
-		}
-
 	}
 
 	virtual void LoadProperties() override
 	{
 		properties.clear();
-		if (1)
-		{
-			if (1)
-			{
-				std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
-				op->g = L"StackPanel";
-				op->n = L"Orientation";
-				op->Items = { L"Vertical", L"Horizontal" };
-				op->DefaultIndex = 0;
-				properties.push_back(op);
-
-			}
-		}
-
 		AddPropertySet<Panel>();
 		AddPropertySet<FrameworkElement>();
 		AddPropertySet<UIElement>();
@@ -63,7 +35,7 @@ public:
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
 	{
-		X = StackPanel();
+		X = Grid();
 		if (properties.empty())
 			LoadProperties();
 
@@ -89,14 +61,14 @@ public:
 	}
 };
 
-std::shared_ptr<XITEM> CreateXItemStackPanel()
+std::shared_ptr<XITEM> CreateXItemGrid()
 {
-	return std::make_shared< ITEM_STACKPANEL>();
+	return std::make_shared< ITEM_GRID>();
 }
 
-bool ISXItemStackPanel(std::shared_ptr<XITEM> xit)
+bool ISXItemGrid(std::shared_ptr<XITEM> xit)
 {
 	if (!xit)
 		return false;
-	return std::dynamic_pointer_cast<ITEM_STACKPANEL>(xit) != nullptr;
+	return std::dynamic_pointer_cast<ITEM_GRID>(xit) != nullptr;
 }

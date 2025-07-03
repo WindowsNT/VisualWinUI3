@@ -169,7 +169,7 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 			if (opx && opx->SelectedIndex != opx->DefaultIndex)
 			{
 				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
-				op.SetValueULongLong(opx->SelectedIndex);
+				op.SetWideValue(opx->Items[opx->SelectedIndex].c_str());
 			}
 		}
 
@@ -180,6 +180,19 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 			{
 				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
 				op.SetWideValue(opx->value.c_str());
+			}
+		}
+
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<COLOR_PROPERTY>(p);
+			if (opx && opx->value != opx->def)
+			{
+				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+				// #XXXXXXXX
+				wchar_t xf[100] = {};
+				swprintf_s(xf, 100, L"#%02X%02X%02X%02X", opx->value.R, opx->value.G, opx->value.G, opx->value.A);
+				op.SetWideValue(xf);
 			}
 		}
 

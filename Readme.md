@@ -2,13 +2,13 @@
 
 
 ## Supported elements so far
-UIElement
-	FrameworkElement
-		TextBlock
-		Control
-			Button
-			TextBox
-		Panel
-			StackPanel
+- UIElement
+- FrameworkElement
+ - TextBlock
+ - Control
+  - Button
+  - TextBox
+ - Panel
+  - StackPanel
 
 

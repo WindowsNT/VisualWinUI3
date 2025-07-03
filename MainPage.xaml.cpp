@@ -287,15 +287,31 @@ namespace winrt::VisualWinUI3::implementation
 	void MainPage::Build()
 	{
 		auto topnv = Content().as<Panel>();
-		auto root = topnv.FindName(L"PutRoot").as<Panel>();
+
 		if (!project)
 			return;
 		if (!project->root)
 			return;
-		root.Children().Clear();
-		auto mrs = topnv.FindName(L"MenuRootSelect").as<MenuBarItem>();
+
+		Panel rootsp = StackPanel();
+		if (ISXItemStackPanel(project->root))
+			rootsp = topnv.FindName(L"PutRootSP").as<Panel>();
+		if (ISXItemGrid(project->root))
+			rootsp = topnv.FindName(L"PutRootGR").as<Panel>();
+		rootsp.Children().Clear();
+		auto mrs = topnv.FindName(L"MenuRootSelect").as<MenuBar>();
+
 		mrs.Items().Clear();
-		Build(nullptr,root,project->root,mrs,0);
+		MenuBarItem mrsitem;
+		mrsitem.Title(txt(23).c_str());
+		mrs.Items().Append(mrsitem);
+		Build(nullptr, rootsp, project->root, mrsitem, 0);
+
+		// Apply properties of the root to rootsp
+		ApplyPropertiesFor(rootsp.as<Panel>(), project->root->properties);
+		ApplyPropertiesFor(rootsp.as<FrameworkElement>(), project->root->properties);
+		ApplyPropertiesFor(rootsp.as<UIElement>(), project->root->properties);
+
 		Refresh(L"PropertyItems");
 		Refresh(L"PropertyTypeSelector");
 	}
@@ -435,6 +451,25 @@ namespace winrt::VisualWinUI3::implementation
 			SelectedItem->children.push_back(j);
 			SelectedItem = j;
 		}
+		Build();
+	}
+
+	void MainPage::I_Grid(IInspectable const&, IInspectable const&)
+	{
+		if (!project)
+			project = std::make_shared<PROJECT>();
+		if (!project->root)
+		{
+			project->root = CreateXItemGrid();
+			SelectedItem = project->root;
+		}
+		else
+			if (SelectedItem)
+			{
+				auto j = CreateXItemGrid();
+				SelectedItem->children.push_back(j);
+				SelectedItem = j;
+			}
 		Build();
 	}
 

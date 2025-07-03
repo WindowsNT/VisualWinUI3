@@ -166,6 +166,7 @@
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="FrameworkElement.cpp" />
     <ClCompile Include="func.cpp" />
+    <ClCompile Include="grid.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemSelector.cpp" />
     <ClCompile Include="linker.cpp" />
