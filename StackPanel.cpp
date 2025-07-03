@@ -7,6 +7,11 @@ class ITEM_STACKPANEL : public XITEM
 public:
 
 	StackPanel X;
+	virtual winrt::Windows::Foundation::IInspectable XX() override
+	{
+		return X;
+	}
+
 	ITEM_STACKPANEL()
 	{
 		ElementName = L"StackPanel";
@@ -18,6 +23,8 @@ public:
 		ApplyPropertiesFor(X.as<UIElement>(), properties);
 		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		ApplyPropertiesFor(X.as<Panel>(), properties);
+
+
 		for (auto& p : properties)
 		{
 			if (p->n == L"Orientation")
@@ -40,63 +47,34 @@ public:
 			if (1)
 			{
 				std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
-				op->S = 1;
 				op->g = L"StackPanel";
 				op->n = L"Orientation";
 				op->Items = { L"Vertical", L"Horizontal" };
+				op->DefaultIndex = 0;
 				properties.push_back(op);
 
 			}
 		}
 
-		if (1)
-		{
-			auto uip = CreatePropertiesFor(X.as<Panel>());
-			for (auto& p : uip)
-			{
-				properties.push_back(p);
-			}
-		}
-
-		if (1)
-		{
-			auto uip = CreatePropertiesFor(X.as<FrameworkElement>());
-			for (auto& p : uip)
-			{
-				properties.push_back(p);
-			}
-		}
-
-		if (1)
-		{
-			auto uip = CreatePropertiesFor(X.as<UIElement>());
-			for (auto& p : uip)
-			{
-				properties.push_back(p);
-			}
-		}
+		AddPropertySet<Panel>();
+		AddPropertySet<FrameworkElement>();
+		AddPropertySet<UIElement>();
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
 	{
 		X = StackPanel();
 		if (properties.empty())
 			LoadProperties();
 
-		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
-		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
+		if (ForWhat == 0)
+		{
+			AllTap(X);
+		}
 
-		X.Orientation(winrt::Microsoft::UI::Xaml::Controls::Orientation::Vertical);
 		X.Tag(box_value((long long)this));
-		X.Background(SolidColorBrush(Colors::Transparent()));
+		if (ForWhat == 0)
+			X.Background(SolidColorBrush(Colors::Transparent()));
 		return X;
 	}
 

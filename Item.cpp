@@ -79,6 +79,54 @@ namespace winrt::VisualWinUI3::implementation
 
     }
 
+    void Item::Color0(winrt::Windows::UI::Color c)
+    {
+        _color = c;
+
+        // Apply
+        for (auto& wi : windows)
+        {
+            auto the_window = wi.second.as<winrt::VisualWinUI3::MainWindow>();
+
+            // Find the MainPage for it
+            auto tnv = the_window.Content().as<winrt::Microsoft::UI::Xaml::Controls::NavigationView>();
+            if (!tnv)
+                continue;
+
+            auto fr = tnv.FindName(L"contentFrame").as<winrt::Microsoft::UI::Xaml::Controls::Frame>();
+            if (!fr)
+                continue;
+            auto main_page = fr.Content().as<winrt::VisualWinUI3::MainPage>();
+            if (!main_page)
+                continue;
+
+            // Find the item
+            if (!SelectedItem)
+                continue;
+
+            for (auto& props : SelectedItem->properties)
+            {
+                if ((long long)props.get() == _PropertyX)
+                {
+                    auto list_type = std::dynamic_pointer_cast<COLOR_PROPERTY>(props);
+                    if (list_type)
+                    {
+                        if (list_type->value == _color)
+                            return; // No change
+                        list_type->value = _color;
+
+                    }
+                    break;
+                }
+            }
+
+            SelectedItem->ApplyProperties();
+
+        }
+
+
+    }
+
     void Item::Value0(winrt::hstring n)
     {
         _v0 = n;

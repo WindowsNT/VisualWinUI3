@@ -166,7 +166,7 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 		if (1)
 		{
 			auto opx = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
-			if (opx)
+			if (opx && opx->SelectedIndex != opx->DefaultIndex)
 			{
 				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
 				op.SetValueULongLong(opx->SelectedIndex);

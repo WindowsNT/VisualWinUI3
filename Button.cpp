@@ -6,6 +6,10 @@ class ITEM_BUTTON : public XITEM
 public:
 
 	Button X;
+	virtual winrt::Windows::Foundation::IInspectable XX() override
+	{
+		return X;
+	}
 	ITEM_BUTTON()
 	{
 		ElementName = L"Button";
@@ -15,8 +19,7 @@ public:
 	virtual void ApplyProperties()
 	{
 		ApplyPropertiesForContent(X.as<Button>(), properties);
-		if (!properties.empty())
-			properties[0]->S = 1;
+		ApplyPropertiesFor(X.as<Control>(), properties);
 		ApplyPropertiesFor(X.as<UIElement>(), properties);
 		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 	}
@@ -34,40 +37,21 @@ public:
 				properties.push_back(p);
 			}
 		}
-		if (1)
-		{
-			auto uip = CreatePropertiesFor(X.as<FrameworkElement>());
-			for (auto& p : uip)
-			{
-				properties.push_back(p);
-			}
-		}
-		if (1)
-		{
-			auto uip = CreatePropertiesFor(X.as<UIElement>());
-			for (auto& p : uip)
-			{
-				properties.push_back(p);
-			}
-		}
+		AddPropertySet<Control>();
+		AddPropertySet<FrameworkElement>();
+		AddPropertySet<UIElement>();
 	}
 
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create() override
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat) override
 	{
 		X = Button();
 		if (properties.empty())
 			LoadProperties();
 
-		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
-		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
+		if (ForWhat == 0)
+		{
+			AllTap(X);
+		}
 
 		X.Tag(box_value((long long)this));
 		X.Content(winrt::box_value(L"Button"));

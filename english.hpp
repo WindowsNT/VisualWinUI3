@@ -22,6 +22,10 @@ L"File",
 L"Root",
 L"Select",
 L"Delete",
+L"Edit",
+L"Undo",
+L"Redo",
+L"Run",
 };
 
-#define MAX_LANG 24
+#define MAX_LANG 28

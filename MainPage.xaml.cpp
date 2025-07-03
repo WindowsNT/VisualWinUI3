@@ -4,6 +4,8 @@
 #include "MainPage.g.cpp"
 #endif
 
+#include "BlankWindow.g.h"
+
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
@@ -12,7 +14,8 @@ using namespace Microsoft::UI::Xaml::Controls;
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
 void UnselectAll(std::shared_ptr<XITEM> r);
-bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit);
+bool SelectLoop(std::shared_ptr<XITEM> r, XITEM* xit);
+bool DeleteLoop(std::shared_ptr<XITEM> r, XITEM* xit);
 
 namespace winrt::VisualWinUI3::implementation
 {
@@ -31,8 +34,55 @@ namespace winrt::VisualWinUI3::implementation
 		CreateWi();
 
 	}
+	void MainPage::OnUndo(IInspectable const&, IInspectable const&)
+	{
+		Undo();
+	}
+	void MainPage::OnRedo(IInspectable const&, IInspectable const&)
+	{
+		Redo();
+	}
+	void MainPage::OnDelete(IInspectable const&, IInspectable const&)
+	{
+		if (!SelectedItem)
+			return;
+
+		Push();
+		DeleteLoop(project->root, SelectedItem.get());	
+		Build();
+	}
+
 	void MainPage::OnOpen(IInspectable const&, IInspectable const&)
 	{
+		OPENFILENAME of = { 0 };
+		of.lStructSize = sizeof(of);
+		of.hwndOwner = (HWND)0;
+		of.lpstrFilter = L"*.vwui3\0*.vwui3\0\0";
+		std::vector<wchar_t> fnx(10000);
+		of.lpstrFile = fnx.data();
+		of.nMaxFile = 10000;
+		of.Flags = OFN_FILEMUSTEXIST;
+		if (!GetOpenFileName(&of))
+			return;
+
+		if (project && project->root)
+		{
+			winrt::VisualWinUI3::MainWindow CreateWi();
+			ToOpenFile = fnx.data();
+			CreateWi();
+		}
+		else
+		{
+			if (!project)
+				project = std::make_shared<PROJECT>();
+			if (!project->root)
+			{
+				project->file = fnx.data();
+				XML3::XML xx(project->file.c_str());
+				project->Unser(*xx.GetRootElement().GetChildren()[0]);
+				Build();
+			}
+		}
 
 	}
 	void MainPage::OnSave(IInspectable const&, IInspectable const&)
@@ -100,74 +150,56 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project->root)
 			return;
 		UnselectAll(project->root);
-		RootLoop(project->root, xit);
+		SelectLoop(project->root, xit);
 		Refresh(L"PropertyItems");
 		Refresh(L"PropertyTypeSelector");
 	}
 
-	void MainPage::Build(UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root)
+	void MainPage::Build(winrt::VisualWinUI3::BlankWindow topbw,UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root,int ForWhat)
 	{
-		if (!root || !iroot)
+		if (!root)
 			return;
 
-		auto ni = root->Create();
+		if (iroot == nullptr && topbw == nullptr)
+		{
+			// No root to put it in
+			return;
+		}
+
+		auto ni = root->Create(ForWhat);
 		if (!ni)
 			return;
 
 		root->ApplyProperties();
 
 		// Add to panel
-		auto ipanel = iroot.as<Panel>();
-		if (!ipanel)
-			return;
-		auto chi = ipanel.Children();
-		chi.Append(ni);
-
-		// Add to menu
-		auto mbi = menu_root.try_as<MenuBarItem>();
-		MenuFlyoutSubItem item2;
-		if (mbi)
+		if (iroot)
 		{
-			if (root->children.size())
-			{
-				item2.Text(root->ElementName);
-				item2.Tag(box_value((long long)root.get()));
-				mbi.Items().Append(item2);
-
-				// And put also this 
-				MenuFlyoutItem item;
-				item.Text(root->ElementName);
-				item.Tag(box_value((long long)root.get()));
-				item.Click([&](IInspectable const& c1, IInspectable const& c2)
-					{
-						SelectClick(c1, c2);
-					});
-				item2.Items().Append(item);
-				item2.Items().Append(MenuFlyoutSeparator());
-			}
-			else
-			{
-				MenuFlyoutItem item;
-				item.Text(root->ElementName);
-				item.Tag(box_value((long long)root.get()));
-				item.Click([&](IInspectable const& c1, IInspectable const& c2)
-					{
-						SelectClick(c1, c2);
-					});
-				mbi.Items().Append(item);
-			}
+			auto ipanel = iroot.as<Panel>();
+			if (!ipanel)
+				return;
+			auto chi = ipanel.Children();
+			chi.Append(ni);
 		}
 		else
+		if (topbw)
 		{
-			// see if it s a MenuFlyoutSubItem
-			auto mfs = menu_root.try_as<MenuFlyoutSubItem>();
-			if (mfs)
+			topbw.Content(ni);
+
+		}
+
+		// Add to menu
+		MenuFlyoutSubItem item2;
+		if (menu_root)
+		{
+			auto mbi = menu_root.try_as<MenuBarItem>();
+			if (mbi)
 			{
 				if (root->children.size())
 				{
 					item2.Text(root->ElementName);
 					item2.Tag(box_value((long long)root.get()));
-					mfs.Items().Append(item2);
+					mbi.Items().Append(item2);
 
 					// And put also this 
 					MenuFlyoutItem item;
@@ -179,7 +211,6 @@ namespace winrt::VisualWinUI3::implementation
 						});
 					item2.Items().Append(item);
 					item2.Items().Append(MenuFlyoutSeparator());
-
 				}
 				else
 				{
@@ -190,26 +221,63 @@ namespace winrt::VisualWinUI3::implementation
 						{
 							SelectClick(c1, c2);
 						});
-					mfs.Items().Append(item);
+					mbi.Items().Append(item);
+				}
+			}
+			else
+			{
+				// see if it s a MenuFlyoutSubItem
+				auto mfs = menu_root.try_as<MenuFlyoutSubItem>();
+				if (mfs)
+				{
+					if (root->children.size())
+					{
+						item2.Text(root->ElementName);
+						item2.Tag(box_value((long long)root.get()));
+						mfs.Items().Append(item2);
+
+						// And put also this 
+						MenuFlyoutItem item;
+						item.Text(root->ElementName);
+						item.Tag(box_value((long long)root.get()));
+						item.Click([&](IInspectable const& c1, IInspectable const& c2)
+							{
+								SelectClick(c1, c2);
+							});
+						item2.Items().Append(item);
+						item2.Items().Append(MenuFlyoutSeparator());
+
+					}
+					else
+					{
+						MenuFlyoutItem item;
+						item.Text(root->ElementName);
+						item.Tag(box_value((long long)root.get()));
+						item.Click([&](IInspectable const& c1, IInspectable const& c2)
+							{
+								SelectClick(c1, c2);
+							});
+						mfs.Items().Append(item);
+					}
 				}
 			}
 		}
-
 		for (auto& r : root->children)
 		{
-			Build(ni,r,item2);
+			Build(topbw,ni,r,item2,ForWhat);
 		}
 	}
 
 	void MainPage::PageLoaded(IInspectable const&, IInspectable const&)
 	{
-		if (__argc > 1)
+		if (ToOpenFile.length())
 		{
 			if (!project)
 				project = std::make_shared<PROJECT>();
-			if (GetFileAttributes(__wargv[1]) == 0xFFFFFFFF)
+			if (GetFileAttributes(ToOpenFile.c_str()) == 0xFFFFFFFF)
 				return;
-			project->file = __wargv[1];
+			project->file = ToOpenFile;
+			ToOpenFile.clear();
 			XML3::XML xx(project->file.c_str());
 			project->Unser(*xx.GetRootElement().GetChildren()[0]);
 			Build();
@@ -219,7 +287,7 @@ namespace winrt::VisualWinUI3::implementation
 	void MainPage::Build()
 	{
 		auto topnv = Content().as<Panel>();
-		auto root = topnv.FindName(L"PutRoot").as<StackPanel>();
+		auto root = topnv.FindName(L"PutRoot").as<Panel>();
 		if (!project)
 			return;
 		if (!project->root)
@@ -227,7 +295,7 @@ namespace winrt::VisualWinUI3::implementation
 		root.Children().Clear();
 		auto mrs = topnv.FindName(L"MenuRootSelect").as<MenuBarItem>();
 		mrs.Items().Clear();
-		Build(root,project->root,mrs);
+		Build(nullptr,root,project->root,mrs,0);
 		Refresh(L"PropertyItems");
 		Refresh(L"PropertyTypeSelector");
 	}
@@ -307,11 +375,37 @@ namespace winrt::VisualWinUI3::implementation
 				item.Name1(pro->n);
 				children.Append(item);
 			}
+			auto color_type = std::dynamic_pointer_cast<COLOR_PROPERTY>(pro);
+			if (color_type)
+			{
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)color_type.get());
+				item.Type(PT_COLOR);
+				item.Color0(color_type->value);
+				item.Name1(pro->n);
+				children.Append(item);
+			}
 		}
 
 		return children;
 	}
 
+
+	void MainPage::E_RUN(IInspectable const&, IInspectable const&)
+	{
+		if (!project)
+			return;
+		if (!project->root)
+			return;
+
+		// Show it in the BlankWindow
+		winrt::VisualWinUI3::BlankWindow bw;
+		auto cont = bw.Content();
+
+		auto topnv = Content().as<Panel>();
+		Build(bw,nullptr, project->root, nullptr,1);
+		bw.Activate();
+	}
 
 	void MainPage::E_XAML(IInspectable const&, IInspectable const&)
 	{
@@ -368,6 +462,18 @@ namespace winrt::VisualWinUI3::implementation
 		Build();
 	}
 
+	void MainPage::I_TextBox(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemTextBox();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
 
 }
 
@@ -387,7 +493,25 @@ void UnselectAll(std::shared_ptr<XITEM> r)
 	}
 }
 
-bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit)
+bool DeleteLoop(std::shared_ptr<XITEM> r, XITEM* xit)
+{
+	if (!r || !xit)
+		return false;
+
+	for (size_t i = 0 ; i < r->children.size() ; i++)
+	{
+		if (r->children[i].get() == xit)
+		{
+			r->children.erase(r->children.begin() + i);
+			return true;
+		}
+		if (DeleteLoop(r->children[i], xit))
+			return true;
+	}
+	return false;
+}
+
+bool SelectLoop(std::shared_ptr<XITEM> r, XITEM* xit)
 {
 	if (!r || !xit)
 		return false;
@@ -401,7 +525,7 @@ bool RootLoop(std::shared_ptr<XITEM> r, XITEM* xit)
 
 	for (auto& c : r->children)
 	{
-		if (RootLoop(c, xit))
+		if (SelectLoop(c, xit))
 			return true;
 	}
 	return false;
@@ -446,7 +570,7 @@ void GenericTap(winrt::Windows::Foundation::IInspectable it)
 			continue;
 		UnselectAll(prj->root);
 
-		if (RootLoop(prj->root, ir))
+		if (SelectLoop(prj->root, ir))
 		{
 			main_page.Refresh2(L"PropertyItems");
 			return;

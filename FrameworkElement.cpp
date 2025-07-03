@@ -7,6 +7,43 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vec
 		return;
 	for (auto& p : props)
 	{
+		if (p->n == L"Margin")
+		{
+			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
+			if (op)
+			{
+				try
+				{
+					// get comma separated values from value
+					std::vector<std::wstring> values;
+					std::wstring value = op->value;
+					size_t pos = 0;
+					while ((pos = value.find(L',')) != std::wstring::npos)
+					{
+						values.push_back(value.substr(0, pos));
+						value.erase(0, pos + 1);
+					}
+					if (value.length())
+						values.push_back(value);
+					if (values.size() == 4)
+					{
+						double left = std::stod(values[0]);
+						double top = std::stod(values[1]);
+						double right = std::stod(values[2]);
+						double bottom = std::stod(values[3]);
+						Microsoft::UI::Xaml::Thickness th = { left, top, right, bottom };
+						e.Margin(th);
+					}
+					else
+					{
+					}
+				}
+				catch (...)
+				{
+
+				}
+			}
+		}
 		if (p->n == L"Name")
 		{
 			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
@@ -47,6 +84,22 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vec
 				e.MaxHeight(op->value);
 			}
 		}
+		if (p->n == L"HorizontalAligment")
+		{
+			auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+			if (op)
+			{
+				e.HorizontalAlignment((winrt::Microsoft::UI::Xaml::HorizontalAlignment)op->SelectedIndex);
+			}
+		}
+		if (p->n == L"VerticalAligment")
+		{
+			auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+			if (op)
+			{
+				e.VerticalAlignment((winrt::Microsoft::UI::Xaml::VerticalAlignment)op->SelectedIndex);
+			}
+		}
 	}
 }
 
@@ -57,6 +110,17 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 	if (!e)
 		return p;
 
+
+	
+	if (1)
+	{
+		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
+		op->g = L"FrameworkElement";
+		op->n = L"Margin";
+		op->value = e.Name();
+		op->def = L"";
+		p.push_back(op);
+	}
 	if (1)
 	{
 		std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
@@ -109,6 +173,25 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->value = e.Name();
 		p.push_back(op);
 	}
-
+	if (1)
+	{
+		std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
+		op->g = L"FrameworkElement";
+		op->n = L"HorizontalAligment";
+		op->Items = { L"Left", L"Center", L"Right", L"Stretch" };
+		op->DefaultIndex = 3;
+		op->SelectedIndex = (size_t)e.HorizontalAlignment();	
+		p.push_back(op);
+	}
+	if (1)
+	{
+		std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
+		op->g = L"FrameworkElement";
+		op->n = L"VerticalAligment";
+		op->Items = { L"Top",L"Center",L"Bottom",L"Stretch"};
+		op->DefaultIndex = 3;
+		op->SelectedIndex = (size_t)e.VerticalAlignment();
+		p.push_back(op);
+	}
 	return p;
 }

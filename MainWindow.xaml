@@ -35,6 +35,12 @@
                     <NumberBox Minimum="{x:Bind Number1,Mode=OneWay}" Margin="5"  Maximum="{x:Bind Number2,Mode=OneWay}" Value="{x:Bind Number0,Mode=TwoWay}"/>
                 </StackPanel>
             </DataTemplate>
+            <DataTemplate x:Key="ColorTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <TextBlock Text="{x:Bind Name1}" Margin="5" />
+                    <ColorPicker Margin="5"  Color="{x:Bind Color0,Mode=TwoWay}" />
+                </StackPanel>
+            </DataTemplate>
             <DataTemplate x:Key="ListTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" Margin="5"/>

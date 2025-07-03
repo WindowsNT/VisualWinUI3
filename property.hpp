@@ -41,6 +41,7 @@ enum PROPERTY_TYPE
 	PT_DOUBLE,
 	PT_LIST,
 	PT_HEADER,
+	PT_COLOR,
 };
 
 class STRING_PROPERTY : public PROPERTY
@@ -113,6 +114,38 @@ public:
 	}
 };
 
+class COLOR_PROPERTY : public PROPERTY
+{
+	public:
+	winrt::Windows::UI::Color value = winrt::Windows::UI::Colors::Black();
+	winrt::Windows::UI::Color def = winrt::Windows::UI::Colors::Black();
+	virtual void Ser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Ser(el);
+		el.vv("r").SetValueInt(value.R);
+		el.vv("g").SetValueInt(value.G);
+		el.vv("b").SetValueInt(value.B);
+		el.vv("a").SetValueInt(value.A);
+		el.vv("dr").SetValueInt(def.R);
+		el.vv("dg").SetValueInt(def.G);
+		el.vv("db").SetValueInt(def.B);
+		el.vv("da").SetValueInt(def.A);
+	}
+	virtual void Unser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Unser(el);
+		value.R = (uint8_t)el.vv("r").GetValueInt(0);
+		value.G = (uint8_t)el.vv("g").GetValueInt(0);
+		value.B = (uint8_t)el.vv("b").GetValueInt(0);
+		value.A = (uint8_t)el.vv("a").GetValueInt(0);
+		def.R = (uint8_t)el.vv("dr").GetValueInt(0);
+		def.G = (uint8_t)el.vv("dg").GetValueInt(0);
+		def.B = (uint8_t)el.vv("db").GetValueInt(0);
+		def.A = (uint8_t)el.vv("da").GetValueInt(0);
+	}
+};
+
+
 class DOUBLE_PROPERTY : public PROPERTY
 {
 	public:
@@ -140,6 +173,7 @@ class DOUBLE_PROPERTY : public PROPERTY
 
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props);
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props);
+void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e, std::vector <std::shared_ptr<PROPERTY>> props);
 void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e, std::vector <std::shared_ptr<PROPERTY>> props);
 
 using namespace winrt::Microsoft::UI::Xaml::Media;
@@ -149,85 +183,12 @@ using namespace Microsoft::UI::Xaml::Controls;
 using namespace Microsoft::UI::Xaml::Media;
 using namespace Windows::UI;
 
-template <typename T>
-void ApplyPropertiesForText(T e, std::vector <std::shared_ptr<PROPERTY>> properties)
-{
-	for (auto& p : properties)
-	{
-		if (p->n == L"Text")
-		{
-			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
-			if (op)
-			{
-				e.Text(op->value);
-			}
-		}
-	}
-}
-template <typename T>
-void ApplyPropertiesForContent(T e, std::vector <std::shared_ptr<PROPERTY>> properties)
-{
-	for (auto& p : properties)
-	{
-		if (p->n == L"Content")
-		{
-			auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
-			if (op)
-			{
-				e.Content(winrt::box_value(op->value));
-			}
-		}
-	}
-}
-
+#include "templateproperties.h"
 
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e);
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e);
+std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e);
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e);
-template <typename T>
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForText(T e,const wchar_t* defv)
-{
-	std::vector<std::shared_ptr<PROPERTY>> p;
-	if (!e)
-		return p;
-
-	if (1)
-	{
-		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
-		op->n = L"Text";
-		op->value = e.Text();
-		if (defv)
-			op->value = defv;
-		p.push_back(op);
-	}
-	return p;
-}
-template <typename T>
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForContent(T e,const wchar_t*defv)
-{
-	std::vector<std::shared_ptr<PROPERTY>> p;
-	if (!e)
-		return p;
-
-	if (1)
-	{
-		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
-		op->n = L"Content";
-		if (defv)
-			op->value = defv;
-		try
-		{
-			auto cont = e.Content();
-			op->value = winrt::unbox_value<winrt::hstring>(cont);
-		}
-		catch (...)
-		{
-		}
-		p.push_back(op);
-	}
-	return p;
-}
-
 
 void XMLPropertiesFor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
 void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
@@ -240,7 +201,7 @@ public:
 	std::wstring ElementName; // Say, "StackPanel"
 	std::vector<std::shared_ptr<PROPERTY>> properties;
 	std::vector<std::shared_ptr<XITEM>> children;
-	virtual winrt::Microsoft::UI::Xaml::UIElement Create()
+	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int)
 	{
 		return nullptr;
 	}
@@ -252,6 +213,46 @@ public:
 	{
 
 	}
+	virtual winrt::Windows::Foundation::IInspectable XX()
+	{
+		return nullptr;
+	}
+
+	template <typename T>
+	void AllTap(T X)
+	{
+		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
+			{
+				GenericTap(t);
+				teh.Handled(true);
+			});
+		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
+			{
+				GenericTap(t);
+				teh.Handled(true);
+			});
+
+	}
+
+	template <typename T>
+	size_t AddPropertySet()
+	{
+		auto uip = CreatePropertiesFor(XX().as<T>());
+		std::sort(uip.begin(), uip.end(), [](std::shared_ptr<PROPERTY> left, std::shared_ptr<PROPERTY> right) -> bool
+			{
+				if (left->n < right->n)
+					return true;
+				return false;
+			});
+
+		for (auto& p : uip)
+		{
+			properties.push_back(p);
+		}
+
+		return uip.size();
+	}
+
 
 	virtual XML3::XMLElement SaveEl()
 	{
@@ -301,6 +302,7 @@ inline std::shared_ptr<XITEM> SelectedItem;
 std::shared_ptr<XITEM> CreateXItemStackPanel();
 std::shared_ptr<XITEM> CreateXItemButton();
 std::shared_ptr<XITEM> CreateXItemTextBlock();
+std::shared_ptr<XITEM> CreateXItemTextBox();
 
 inline void XITEM::Unser(XML3::XMLElement& el)
 {
@@ -314,6 +316,7 @@ inline void XITEM::Unser(XML3::XMLElement& el)
 		if (el2 == "StackPanel")	ch = CreateXItemStackPanel();
 		if (el2 == "Button")	ch = CreateXItemButton();
 		if (el2 == "TextBlock")	ch = CreateXItemTextBlock();
+		if (el2 == "TextBox")	ch = CreateXItemTextBox();
 		if (!ch)
 			continue;
 		ch->Unser(e);

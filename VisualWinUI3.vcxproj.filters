@@ -21,23 +21,29 @@
     <ClCompile Include="linker.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="ItemSelector.cpp" />
-    <ClCompile Include="UIElement.cpp">
-      <Filter>Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameworkElement.cpp">
-      <Filter>Specific</Filter>
-    </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>Specific</Filter>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Panel</Filter>
     </ClCompile>
     <ClCompile Include="StackPanel.cpp">
-      <Filter>Specific</Filter>
+      <Filter>Specific\UIElement\FrameworkElement\Panel</Filter>
     </ClCompile>
-    <ClCompile Include="Panel.cpp">
-      <Filter>Specific</Filter>
+    <ClCompile Include="UIElement.cpp">
+      <Filter>Specific\UIElement</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameworkElement.cpp">
+      <Filter>Specific\UIElement\FrameworkElement</Filter>
+    </ClCompile>
+    <ClCompile Include="Control.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBox.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
     </ClCompile>
     <ClCompile Include="TextBlock.cpp">
-      <Filter>Specific</Filter>
+      <Filter>Specific\UIElement\FrameworkElement</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +51,9 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="property.hpp" />
     <ClInclude Include="ItemSelector.h" />
+    <ClInclude Include="templateproperties.h">
+      <Filter>Specific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
@@ -75,6 +84,18 @@
     </Filter>
     <Filter Include="Specific">
       <UniqueIdentifier>{764b2f40-8dae-4d40-a394-1ba890c1c9ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Specific\UIElement">
+      <UniqueIdentifier>{2cf6ac0c-d91d-43e8-aa5e-40e5f26dda07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Specific\UIElement\FrameworkElement">
+      <UniqueIdentifier>{180d0a0c-9471-4136-acae-561c9d82a451}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Specific\UIElement\FrameworkElement\Panel">
+      <UniqueIdentifier>{c6abbf3e-45df-4c34-84fd-0c4af81ed029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Specific\UIElement\FrameworkElement\Control">
+      <UniqueIdentifier>{f885674c-cf14-459f-948a-fb50846d452f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

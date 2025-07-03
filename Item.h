@@ -115,6 +115,14 @@ namespace winrt::VisualWinUI3::implementation
         void Sel(bool s);
 
 
+        winrt::Windows::UI::Color _color;
+
+        winrt::Windows::UI::Color Color0()
+        {
+            return _color;
+		}
+        void Color0(winrt::Windows::UI::Color c);
+
         winrt::Microsoft::UI::Xaml::Media::Brush ColorX()
         {
             auto col = winrt::Windows::UI::Color();

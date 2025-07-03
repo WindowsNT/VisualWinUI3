@@ -7,7 +7,7 @@
 
 bool is_light_theme();
 
-
+std::wstring ToOpenFile;
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
@@ -19,6 +19,12 @@ HICON hIcon1 = 0;
 std::map<HWND, winrt::Windows::Foundation::IInspectable> windows;
 LRESULT CALLBACK cbx(HWND hh, UINT mm, WPARAM ww, LPARAM ll)
 {
+    if (mm == WM_CLOSE)
+    {
+        windows.erase(hh);
+        if (windows.size() == 0)
+            ExitProcess(0);
+    }
     return CallWindowProc(wProc, hh, mm, ww, ll);
 }
 
@@ -177,6 +183,13 @@ namespace winrt::VisualWinUI3::implementation
     /// <param name="e">Details about the launch request and process.</param>
     void App::OnLaunched([[maybe_unused]] LaunchActivatedEventArgs const& e)
     {
+        if (__argc > 1)
+        {
+            if (std::filesystem::exists(__wargv[1]))
+            {
+                ToOpenFile = __wargv[1];
+            }
+        }
         window = CreateWi();
     }
 }

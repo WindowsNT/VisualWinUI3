@@ -12,12 +12,46 @@ namespace winrt::VisualWinUI3::implementation
     struct MainPage : MainPageT<MainPage>
     {
         std::shared_ptr<PROJECT> project;
+        std::stack<XML3::XMLElement> undo, redo;
 
         long long ProjectPtr()
         {
             if (!project)
                 return 0;
             return (long long)project.get();
+        }
+
+        void Push()
+        {
+            if (!project || !project->root)
+                return;
+            XML3::XMLElement e;
+            project->root->Ser(e);
+            undo.push(e);
+        }
+        void Undo()
+        {
+            if (undo.empty())
+                return;
+            XML3::XMLElement e;
+            project->root->Ser(e);
+            redo.push(e);
+            project->root->Unser(undo.top());
+            undo.pop();
+            Build();
+			Refresh();
+        }
+        void Redo()
+        {
+            if (redo.empty())
+                return;
+            XML3::XMLElement e;
+            project->root->Ser(e);
+            undo.push(e);
+            project->root->Unser(redo.top());
+            redo.pop();
+            Build();
+            Refresh();
         }
 
         MainPage()
@@ -57,6 +91,9 @@ namespace winrt::VisualWinUI3::implementation
         void Refresh(std::vector<std::wstring> strs);
         void Refresh(const wchar_t* s = L"");
         void Refresh2(winrt::hstring);
+        void OnUndo(IInspectable const&, IInspectable const&);
+        void OnRedo(IInspectable const&, IInspectable const&);
+        void OnDelete(IInspectable const&, IInspectable const&);
         void OnNew(IInspectable const&, IInspectable const&);
         void OnOpen(IInspectable const&, IInspectable const&);
         void OnSave(IInspectable const&, IInspectable const&);
@@ -65,14 +102,16 @@ namespace winrt::VisualWinUI3::implementation
 
      
         void Build();
-        void Build(winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root);
+        void Build(winrt::VisualWinUI3::BlankWindow topbw,winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root,int ForWhat);
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> PropertyItems();
 		winrt::Microsoft::UI::Xaml::Controls::DataTemplateSelector PropertyTypeSelector();
 
         void I_StackPanel(IInspectable const&, IInspectable const&);
         void I_Button(IInspectable const&, IInspectable const&);
         void I_TextBlock(IInspectable const&, IInspectable const&);
+        void I_TextBox(IInspectable const&, IInspectable const&);
         void E_XAML(IInspectable const&, IInspectable const&);
+        void E_RUN(IInspectable const&, IInspectable const&);
 
     };
 }

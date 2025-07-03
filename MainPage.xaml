@@ -54,6 +54,24 @@
                 </MenuFlyoutItem>
             </MenuBarItem>
 
+            <MenuBarItem Title="{x:Bind txt(25);}" >
+                <MenuFlyoutItem Text="{x:Bind txt(26)}" Click="OnUndo" >
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Z" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(27)}" Click="OnRedo" >
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Y" Modifiers="Control"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(24)}" Click="OnDelete" >
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Delete" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+
             <MenuBarItem Title="{x:Bind txt(20);}" >
                 <MenuFlyoutSubItem Text="Panel">
                     <MenuFlyoutItem Text="StackPanel" Click="I_StackPanel" />
@@ -63,6 +81,7 @@
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem Text="Text">
                     <MenuFlyoutItem Text="TextBlock" Click="I_TextBlock" />
+                    <MenuFlyoutItem Text="TextBox" Click="I_TextBox" />
                 </MenuFlyoutSubItem>
             </MenuBarItem>
 
@@ -76,6 +95,11 @@
                         <KeyboardAccelerator Key="E" Modifiers="Control"/>
                     </MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
+                <MenuFlyoutItem Text="{x:Bind txt(28);}" Click="E_RUN" >
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5" />
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
             </MenuBarItem>
 
         </MenuBar>
@@ -86,7 +110,7 @@
                 <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" x:Name="PutRoot" BorderBrush="Red" VerticalAlignment="Stretch"  BorderThickness="1">
+        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" x:Name="PutRoot" BorderBrush="Red" VerticalAlignment="Top"  BorderThickness="1">
         </StackPanel>
 
         <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch">

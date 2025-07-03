@@ -10,7 +10,9 @@
 #include <stack>
 #include <mutex>
 #include <vector>
+#include <dwrite.h>
 #include <set>
+#include <stack>
 #include <functional>
 #include <memory>
 #include <limits>
@@ -66,5 +68,5 @@
 extern const wchar_t* ttitle;
 extern std::shared_ptr<XML3::XML> SettingsX;
 extern std::wstring datafolder;
-
+extern std::wstring ToOpenFile;
 const wchar_t* s(size_t);
