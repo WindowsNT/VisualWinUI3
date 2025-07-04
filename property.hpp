@@ -42,6 +42,7 @@ enum PROPERTY_TYPE
 	PT_LIST,
 	PT_HEADER,
 	PT_COLOR,
+	PT_GROUP,
 };
 
 class STRING_PROPERTY : public PROPERTY
@@ -114,6 +115,7 @@ public:
 	}
 };
 
+
 class COLOR_PROPERTY : public PROPERTY
 {
 	public:
@@ -175,6 +177,54 @@ class DOUBLE_PROPERTY : public PROPERTY
 		mmax = el.vv("max").GetValueDouble(1);
 		smallchange = el.vv("sc").GetValueDouble(0.1);
 		largechange = el.vv("lc").GetValueDouble(1.0);
+	}
+};
+
+
+
+class GROUP_PROPERTY : public PROPERTY
+{
+public:
+
+	std::wstring GroupName;
+	std::vector<std::shared_ptr<PROPERTY>> Items;
+
+	virtual void Ser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Ser(el);
+		el.vv("group").SetValue(GroupName);
+		// Serialize list items here if needed
+		for (auto& item : Items)
+		{
+			XML3::XMLElement& itemEl = el.AddElement(XML3::XMLU(item->n.c_str()).bc());
+			item->Ser(itemEl);
+		}
+	}
+
+
+	virtual void Unser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Unser(el);
+		GroupName = el.vv("group").GetWideValue();
+		// Deserialize list items here if needed
+		for (auto& itemEl : el)
+		{
+			std::shared_ptr<PROPERTY> item;
+			if (itemEl.GetElementName() == "STRING_PROPERTY")
+				item = std::make_shared<STRING_PROPERTY>();
+			else if (itemEl.GetElementName() == "INT_PROPERTY")
+				item = std::make_shared<INT_PROPERTY>();
+			else if (itemEl.GetElementName() == "LIST_PROPERTY")
+				item = std::make_shared<LIST_PROPERTY>();
+			else if (itemEl.GetElementName() == "COLOR_PROPERTY")
+				item = std::make_shared<COLOR_PROPERTY>();
+			else if (itemEl.GetElementName() == "DOUBLE_PROPERTY")
+				item = std::make_shared<DOUBLE_PROPERTY>();
+			else
+				continue; // Unknown type
+			item->Unser(itemEl);
+			Items.push_back(item);
+		}
 	}
 };
 

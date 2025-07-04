@@ -77,6 +77,18 @@ namespace winrt::VisualWinUI3::implementation
                         }
                     }
                 }
+                if (it.Type() == PT_GROUP)
+                {
+                    auto r_string = top.Resources().TryLookup(winrt::box_value(L"GroupTemplate"));
+                    if (r_string)
+                    {
+                        auto template1 = r_string.try_as<winrt::Microsoft::UI::Xaml::DataTemplate>();
+                        if (template1)
+                        {
+                            return template1;
+                        }
+                    }
+                }
                 if (it.Type() == PT_COLOR)
                 {
                     auto r_string = top.Resources().TryLookup(winrt::box_value(L"ColorTemplate"));

@@ -58,6 +58,12 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->largechange = 10;
 		op->value = e.Rotation();
 		op->def = 0.0;
+
+
+//		std::shared_ptr<GROUP_PROPERTY> gp = std::make_shared<GROUP_PROPERTY>();
+//		gp->GroupName = L"Transforms";
+//		gp->Items.push_back(op);
+
 		p.push_back(op);
 	}
 	return p;

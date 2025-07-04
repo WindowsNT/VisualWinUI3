@@ -23,6 +23,11 @@
                     <CheckBox Content="{x:Bind Name1}" FontSize="15" Foreground="Red" Margin="5" IsChecked="{x:Bind Sel,Mode=TwoWay}"/>
                 </StackPanel>
             </DataTemplate>
+            <DataTemplate x:Key="GroupTemplate" x:DataType="local:Item">
+                <StackPanel Orientation="Vertical" >
+                    <TextBlock Text="{x:Bind Name1}" Margin="5" />
+                </StackPanel>
+            </DataTemplate>
             <DataTemplate x:Key="StringTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" Margin="5" />
@@ -38,7 +43,7 @@
             <DataTemplate x:Key="ColorTemplate" x:DataType="local:Item">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="{x:Bind Name1}" Margin="5" />
-                    <ColorPicker Margin="5"  Color="{x:Bind Color0,Mode=TwoWay}" />
+                    <ColorPicker Margin="5"  Color="{x:Bind Color0,Mode=TwoWay}" IsAlphaEnabled="True" IsColorSpectrumVisible="True" ColorSpectrumShape="Ring"/>
                 </StackPanel>
             </DataTemplate>
             <DataTemplate x:Key="ListTemplate" x:DataType="local:Item">
