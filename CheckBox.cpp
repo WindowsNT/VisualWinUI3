@@ -67,19 +67,17 @@ public:
 		}
 		if (1)
 		{
-			std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
+			std::shared_ptr<BOOL_PROPERTY> op = std::make_shared<BOOL_PROPERTY>();
 			op->g = L"CheckBox";
 			op->n = L"IsChecked";
-			op->Items = { L"False", L"True" };
 			op->DefaultIndex = 0;
 			properties.push_back(op);
 		}
 		if (1)
 		{
-			std::shared_ptr<LIST_PROPERTY> op = std::make_shared<LIST_PROPERTY>();
+			std::shared_ptr<BOOL_PROPERTY> op = std::make_shared<BOOL_PROPERTY>();
 			op->g = L"CheckBox";
 			op->n = L"IsThreeState";
-			op->Items = { L"False", L"True" };
 			op->DefaultIndex = 0;
 			properties.push_back(op);
 		}

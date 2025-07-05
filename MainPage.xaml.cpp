@@ -396,6 +396,16 @@ namespace winrt::VisualWinUI3::implementation
 				item.Change2(double_type->largechange);
 				children.Append(item);
 			}
+			auto bool_type = std::dynamic_pointer_cast<BOOL_PROPERTY>(pro);
+			if (bool_type)
+			{
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)bool_type.get());
+				item.Type(PT_BOOL);
+				item.Int0((int)bool_type->SelectedIndex);
+				item.Name1(pro->n);
+				children.Append(item);
+			}
 			auto list_type = std::dynamic_pointer_cast<LIST_PROPERTY>(pro);
 			if (list_type)
 			{
@@ -546,6 +556,18 @@ namespace winrt::VisualWinUI3::implementation
 		if (!SelectedItem) return;
 
 		auto j = CreateXItemCheckBox();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
+	void MainPage::I_CalendarDatePicker(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemCalendarDatePicker();
 		SelectedItem->children.push_back(j);
 		SelectedItem = j;
 		Build();

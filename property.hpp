@@ -43,6 +43,7 @@ enum PROPERTY_TYPE
 	PT_HEADER,
 	PT_COLOR,
 	PT_GROUP,
+	PT_BOOL,
 };
 
 class STRING_PROPERTY : public PROPERTY
@@ -116,6 +117,29 @@ public:
 	{
 		PROPERTY::Unser(el);
 		// Deserialize list items here if needed
+		SelectedIndex = el.vv("s").GetValueULongLong(0);
+		DefaultIndex = el.vv("d").GetValueULongLong(0);
+	}
+};
+
+class BOOL_PROPERTY : public PROPERTY
+{
+public:
+
+	size_t SelectedIndex = 0;
+	size_t DefaultIndex = 0;
+
+	virtual void Ser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Ser(el);
+		el.vv("s").SetValueULongLong(SelectedIndex);
+		el.vv("d").SetValueULongLong(DefaultIndex);
+	}
+
+
+	virtual void Unser(XML3::XMLElement& el) override
+	{
+		PROPERTY::Unser(el);
 		SelectedIndex = el.vv("s").GetValueULongLong(0);
 		DefaultIndex = el.vv("d").GetValueULongLong(0);
 	}
@@ -393,7 +417,7 @@ std::shared_ptr<XITEM> CreateXItemCheckBox();
 std::shared_ptr<XITEM> CreateXItemTextBlock();
 std::shared_ptr<XITEM> CreateXItemTextBox();
 std::shared_ptr<XITEM> CreateXItemRatingControl();
-
+std::shared_ptr<XITEM> CreateXItemCalendarDatePicker();
 
 inline bool IsSomeParentGrid(XITEM* xit,bool = false)
 {
@@ -421,6 +445,7 @@ inline void XITEM::Unser(XML3::XMLElement& el)
 		if (el2 == "HyperlinkButton")	ch = CreateXItemHLButton();
 		if (el2 == "ToggleButton")	ch = CreateXItemToggleButton();
 		if (el2 == "CheckBox")	ch = CreateXItemCheckBox();
+		if (el2 == "CalendarDatePicker")	ch = CreateXItemCalendarDatePicker();
 		if (el2 == "TextBlock")	ch = CreateXItemTextBlock();
 		if (el2 == "TextBox")	ch = CreateXItemTextBox();
 		if (el2 == "RatingControl")	ch = CreateXItemRatingControl();

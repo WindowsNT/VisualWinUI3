@@ -6,6 +6,7 @@ namespace VisualWinUI3
 			Item();
 			Int64	PropertyX;
 			Int32 Type;
+			Boolean Boolean0;
 			Double Number0;
 			Double Number1;
 			Double Number2;

@@ -90,6 +90,9 @@
                     <MenuFlyoutItem Text="ToggleButton" Click="I_ToggleButton" />
                     <MenuFlyoutItem Text="CheckBox" Click="I_CheckBox" />
                 </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Time">
+                    <MenuFlyoutItem Text="CalendarDatePicker" Click="I_CalendarDatePicker" />
+                </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem Text="Text">
                     <MenuFlyoutItem Text="TextBlock" Click="I_TextBlock" />
                     <MenuFlyoutItem Text="TextBox" Click="I_TextBox" />

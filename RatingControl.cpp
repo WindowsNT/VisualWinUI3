@@ -36,6 +36,14 @@ public:
 					X.Value(op->value);
 				}
 			}
+			if (p->n == L"IsClearEnabled")
+			{
+				auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+				if (op)
+				{
+					X.IsClearEnabled(op->SelectedIndex);
+				}
+			}
 		}
 		ApplyPropertiesFor(X.as<Control>(), properties);
 		ApplyPropertiesFor(X.as<UIElement>(), properties);
@@ -48,6 +56,14 @@ public:
 		properties.clear();
 
 
+		if (1)
+		{
+			std::shared_ptr<BOOL_PROPERTY> op = std::make_shared<BOOL_PROPERTY>();
+			op->g = L"RatingControl";
+			op->n = L"IsClearEnabled";
+			op->DefaultIndex = 0;
+			properties.push_back(op);
+		}
 		if (1)
 		{
 			std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
@@ -66,7 +82,7 @@ public:
 			std::shared_ptr<DOUBLE_PROPERTY> op = std::make_shared<DOUBLE_PROPERTY>();
 			op->g = L"RatingControl";
 			op->n = L"Value";
-			op->mmin = 0;
+			op->mmin = 1;
 			op->mmax = 100;
 			op->smallchange = 0.5;
 			op->largechange = 0.5;

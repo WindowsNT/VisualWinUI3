@@ -62,6 +62,13 @@ namespace winrt::VisualWinUI3::implementation
             return _PropertyX;
 		}
      
+        bool _boolean0 = false;
+        bool Boolean0()
+        {
+            return _boolean0;
+        }
+        void Boolean0(bool b);
+
 
 		double _ch1 = 1.0, _ch2 = 1.0;
         void Change1(double n)

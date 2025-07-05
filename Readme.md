@@ -1,5 +1,5 @@
-## A tool to create WinUI3 Visually
-
+## Visual WinUI3
+A tool to create a WinUI3 Visually. Supports export to XAML and real-time preview of the UI.
 
 ## Supported elements so far
 * UIElement

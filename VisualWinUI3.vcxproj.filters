@@ -60,6 +60,9 @@
     <ClCompile Include="RatingControl.cpp">
       <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
     </ClCompile>
+    <ClCompile Include="CalendarDatePicker.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />

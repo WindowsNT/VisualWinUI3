@@ -125,6 +125,18 @@ namespace winrt::VisualWinUI3::implementation
                         }
                     }
                 }
+                if (it.Type() == PT_BOOL)
+                {
+                    auto r_list = top.Resources().TryLookup(winrt::box_value(L"BoolTemplate"));
+                    if (r_list)
+                    {
+                        auto template1 = r_list.try_as<winrt::Microsoft::UI::Xaml::DataTemplate>();
+                        if (template1)
+                        {
+                            return template1;
+                        }
+                    }
+                }
             }
             return nullptr;
         }

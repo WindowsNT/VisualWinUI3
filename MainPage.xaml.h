@@ -112,6 +112,7 @@ namespace winrt::VisualWinUI3::implementation
         void I_HLButton(IInspectable const&, IInspectable const&);
         void I_ToggleButton(IInspectable const&, IInspectable const&);
         void I_CheckBox(IInspectable const&, IInspectable const&);
+        void I_CalendarDatePicker(IInspectable const&, IInspectable const&);
         void I_TextBlock(IInspectable const&, IInspectable const&);
         void I_TextBox(IInspectable const&, IInspectable const&);
         void I_RatingControl(IInspectable const&, IInspectable const&);
