@@ -86,10 +86,16 @@
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem Text="Button">
                     <MenuFlyoutItem Text="Button" Click="I_Button" />
+                    <MenuFlyoutItem Text="HyperlinkButton" Click="I_HLButton" />
+                    <MenuFlyoutItem Text="ToggleButton" Click="I_ToggleButton" />
+                    <MenuFlyoutItem Text="CheckBox" Click="I_CheckBox" />
                 </MenuFlyoutSubItem>
                 <MenuFlyoutSubItem Text="Text">
                     <MenuFlyoutItem Text="TextBlock" Click="I_TextBlock" />
                     <MenuFlyoutItem Text="TextBox" Click="I_TextBox" />
+                </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Other">
+                    <MenuFlyoutItem Text="RatingControl" Click="I_RatingControl" />
                 </MenuFlyoutSubItem>
             </MenuBarItem>
 

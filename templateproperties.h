@@ -104,6 +104,9 @@ void ApplyPropertiesForFont(T e, std::vector <std::shared_ptr<PROPERTY>> props)
 		}
 		if (p->n == L"FontFamily")
 		{
+			// If this is a RatingControl, skip
+			if (e.try_as<winrt::Microsoft::UI::Xaml::Controls::RatingControl>())
+				continue;
 			auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
 			if (op)
 			{

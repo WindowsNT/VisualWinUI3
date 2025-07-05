@@ -71,6 +71,8 @@ class INT_PROPERTY : public PROPERTY
 	long long def = 0;
 	long long mmin = -1000;
 	long long mmax = 1000;
+	long long smallchange = 1;
+	long long largechange = 10;
 	virtual void Ser(XML3::XMLElement& el) override
 	{
 		PROPERTY::Ser(el);
@@ -78,6 +80,8 @@ class INT_PROPERTY : public PROPERTY
 		el.vv("def").SetValueLongLong(def);
 		el.vv("min").SetValueLongLong(mmin);
 		el.vv("max").SetValueLongLong(mmax);
+		el.vv("sc").SetValueLongLong(smallchange);
+		el.vv("lc").SetValueLongLong(largechange);
 	}
 	virtual void Unser(XML3::XMLElement& el) override
 	{
@@ -86,6 +90,8 @@ class INT_PROPERTY : public PROPERTY
 		def = el.vv("def").GetValueLongLong(0);
 		mmin = el.vv("min").GetValueLongLong(-1000);
 		mmax = el.vv("max").GetValueLongLong(1000);
+		smallchange = el.vv("sc").GetValueLongLong(1);
+		largechange = el.vv("lc").GetValueLongLong(10);
 	}
 };
 
@@ -381,8 +387,12 @@ bool ISXItemGrid(XITEM* xit);
 std::shared_ptr<XITEM> CreateXItemStackPanel();
 std::shared_ptr<XITEM> CreateXItemGrid();
 std::shared_ptr<XITEM> CreateXItemButton();
+std::shared_ptr<XITEM> CreateXItemHLButton();
+std::shared_ptr<XITEM> CreateXItemToggleButton();
+std::shared_ptr<XITEM> CreateXItemCheckBox();
 std::shared_ptr<XITEM> CreateXItemTextBlock();
 std::shared_ptr<XITEM> CreateXItemTextBox();
+std::shared_ptr<XITEM> CreateXItemRatingControl();
 
 
 inline bool IsSomeParentGrid(XITEM* xit,bool = false)
@@ -408,8 +418,12 @@ inline void XITEM::Unser(XML3::XMLElement& el)
 		if (el2 == "StackPanel")	ch = CreateXItemStackPanel();
 		if (el2 == "Grid")	ch = CreateXItemGrid();
 		if (el2 == "Button")	ch = CreateXItemButton();
+		if (el2 == "HyperlinkButton")	ch = CreateXItemHLButton();
+		if (el2 == "ToggleButton")	ch = CreateXItemToggleButton();
+		if (el2 == "CheckBox")	ch = CreateXItemCheckBox();
 		if (el2 == "TextBlock")	ch = CreateXItemTextBlock();
 		if (el2 == "TextBox")	ch = CreateXItemTextBox();
+		if (el2 == "RatingControl")	ch = CreateXItemRatingControl();
 		if (!ch)
 			continue;
 		ch->Unser(e);

@@ -188,6 +188,7 @@ namespace winrt::VisualWinUI3::implementation
 
 		}
 
+		int NextNumberAv = 0;
 		// Add to menu
 		MenuFlyoutSubItem item2;
 		if (menu_root)
@@ -209,7 +210,19 @@ namespace winrt::VisualWinUI3::implementation
 						{
 							SelectClick(c1, c2);
 						});
+
+					if (NextNumberAv < 10)
+					{
+						int ka = (int)winrt::Windows::System::VirtualKey::Number0;
+						ka += NextNumberAv;
+						winrt::Microsoft::UI::Xaml::Input::KeyboardAccelerator kacc;
+						kacc.Key((winrt::Windows::System::VirtualKey)ka);
+						kacc.Modifiers(winrt::Windows::System::VirtualKeyModifiers::Control);
+						item.KeyboardAccelerators().Append(kacc);
+						NextNumberAv++;
+					}
 					item2.Items().Append(item);
+
 					item2.Items().Append(MenuFlyoutSeparator());
 				}
 				else
@@ -354,6 +367,21 @@ namespace winrt::VisualWinUI3::implementation
 
 			if (CGV == 0)
 				continue; // skip this group
+			auto int_type = std::dynamic_pointer_cast<INT_PROPERTY>(pro);
+			if (int_type)
+			{
+				VisualWinUI3::Item item;
+				item.PropertyX((long long)int_type.get());
+				item.Type(PT_INT);
+				item.Name1(pro->n);
+//				item.Number0((double)int_type->value);
+	//			item.Number1((double)int_type->mmin);
+	//			item.Number2((double)int_type->mmax);
+	//			item.Change1((double)int_type->smallchange);
+	//			item.Change2((double)int_type->largechange);
+				children.Append(item);
+			}
+
 			auto double_type = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(pro);
 			if (double_type)
 			{
@@ -487,6 +515,42 @@ namespace winrt::VisualWinUI3::implementation
 		Build();
 	}
 
+	void MainPage::I_HLButton(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemHLButton();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
+	void MainPage::I_ToggleButton(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemToggleButton();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
+	void MainPage::I_CheckBox(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemCheckBox();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
 	void MainPage::I_TextBlock(IInspectable const&, IInspectable const&)
 	{
 		if (!project) return;
@@ -506,6 +570,18 @@ namespace winrt::VisualWinUI3::implementation
 		if (!SelectedItem) return;
 
 		auto j = CreateXItemTextBox();
+		SelectedItem->children.push_back(j);
+		SelectedItem = j;
+		Build();
+	}
+
+	void MainPage::I_RatingControl(IInspectable const&, IInspectable const&)
+	{
+		if (!project) return;
+		if (!project->root) return;
+		if (!SelectedItem) return;
+
+		auto j = CreateXItemRatingControl();
 		SelectedItem->children.push_back(j);
 		SelectedItem = j;
 		Build();

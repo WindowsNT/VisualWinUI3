@@ -163,10 +163,12 @@
       <SubType>Code</SubType>
     </ClCompile>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="FrameworkElement.cpp" />
     <ClCompile Include="func.cpp" />
-    <ClCompile Include="grid.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="HyperlinkButton.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemSelector.cpp" />
     <ClCompile Include="linker.cpp" />
@@ -185,6 +187,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="$(GeneratedFilesDir)module.g.cpp" />
+    <ClCompile Include="RatingControl.cpp" />
     <ClCompile Include="Settings.xaml.cpp">
       <DependentUpon>Settings.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -192,6 +195,7 @@
     <ClCompile Include="StackPanel.cpp" />
     <ClCompile Include="TextBlock.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="ToggleButton.cpp" />
     <ClCompile Include="UIElement.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -215,6 +219,7 @@
     </Midl>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="AddNewControl.txt" />
     <Text Include="readme.txt">
       <DeploymentContent>false</DeploymentContent>
     </Text>

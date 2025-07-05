@@ -109,8 +109,12 @@ namespace winrt::VisualWinUI3::implementation
         void I_StackPanel(IInspectable const&, IInspectable const&);
         void I_Grid(IInspectable const&, IInspectable const&);
         void I_Button(IInspectable const&, IInspectable const&);
+        void I_HLButton(IInspectable const&, IInspectable const&);
+        void I_ToggleButton(IInspectable const&, IInspectable const&);
+        void I_CheckBox(IInspectable const&, IInspectable const&);
         void I_TextBlock(IInspectable const&, IInspectable const&);
         void I_TextBox(IInspectable const&, IInspectable const&);
+        void I_RatingControl(IInspectable const&, IInspectable const&);
         void E_XAML(IInspectable const&, IInspectable const&);
         void E_RUN(IInspectable const&, IInspectable const&);
 

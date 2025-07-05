@@ -17,6 +17,9 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <st
 		}
 		if (p->n == L"Rotation")
 		{
+			// Exclude if RatingControl
+			if (e.try_as<winrt::Microsoft::UI::Xaml::Controls::RatingControl>())
+				continue;
 			auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
 			if (op)
 			{

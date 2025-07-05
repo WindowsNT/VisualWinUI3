@@ -36,17 +36,29 @@
     <ClCompile Include="Control.cpp">
       <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
     </ClCompile>
-    <ClCompile Include="Button.cpp">
-      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
-    </ClCompile>
     <ClCompile Include="TextBox.cpp">
       <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
     </ClCompile>
     <ClCompile Include="TextBlock.cpp">
       <Filter>Specific\UIElement\FrameworkElement</Filter>
     </ClCompile>
-    <ClCompile Include="grid.cpp">
+    <ClCompile Include="Grid.cpp">
       <Filter>Specific\UIElement\FrameworkElement\Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckBox.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="HyperlinkButton.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="ToggleButton.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="RatingControl.cpp">
+      <Filter>Specific\UIElement\FrameworkElement\Control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +112,15 @@
     <Filter Include="Specific\UIElement\FrameworkElement\Control">
       <UniqueIdentifier>{f885674c-cf14-459f-948a-fb50846d452f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Specific\UIElement\FrameworkElement\Control\Button">
+      <UniqueIdentifier>{2049fcbc-7157-4b24-9456-69021b869655}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="readme.txt" />
+    <Text Include="AddNewControl.txt">
+      <Filter>Specific</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="app.manifest" />
