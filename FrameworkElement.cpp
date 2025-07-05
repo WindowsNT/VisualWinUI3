@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "property.hpp"
 
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props)
+void XITEM_FrameworkElement::ApplyProperties()
 {
+	XITEM_UIElement::ApplyProperties();
+	auto e = X.try_as<winrt::Microsoft::UI::Xaml::FrameworkElement>();
 	if (!e)
 		return;
-	for (auto& p : props)
+	for (auto& p : properties)
 	{
 		if (p->n == L"Margin")
 		{
@@ -104,14 +106,12 @@ void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vec
 }
 
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e)
+std::vector<std::shared_ptr<PROPERTY>> XITEM_FrameworkElement::CreateProperties()
 {
+	auto e = X.try_as<winrt::Microsoft::UI::Xaml::FrameworkElement>();
 	std::vector<std::shared_ptr<PROPERTY>> p;
 	if (!e)
-		return p;
-
-
-	
+		return p;	
 	if (1)
 	{
 		std::shared_ptr<STRING_PROPERTY> op = std::make_shared<STRING_PROPERTY>();
@@ -193,5 +193,10 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		op->SelectedIndex = (size_t)e.VerticalAlignment();
 		p.push_back(op);
 	}
+
+	// Add properties from UIElement
+	auto p2 = XITEM_UIElement::CreateProperties();
+	for (auto& pp : p2)
+		p.push_back(pp);
 	return p;
 }

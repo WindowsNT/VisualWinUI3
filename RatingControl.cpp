@@ -1,61 +1,63 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_RATINGCONTROL : public XITEM
+class ITEM_RATINGCONTROL : public XITEM_Control
 {
 public:
 
-	RatingControl X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_RATINGCONTROL()
 	{
 		ElementName = L"RatingControl";
+		X = RatingControl();
 	}
 
 
 	virtual void ApplyProperties()
 	{
-		for(auto& p : properties)
+		XITEM_Control::ApplyProperties();
+		try
+		{
+
+			auto e = X.as<RatingControl>();
+			for (auto& p : properties)
 			{
-			if (p->n == L"MaxRating")
-			{
-				auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-				if (op)
+				if (p->n == L"MaxRating")
 				{
-					X.MaxRating((int)op->value);
+					auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+					if (op)
+					{
+						e.MaxRating((int)op->value);
+					}
 				}
-			}
-			if (p->n == L"Value")
-			{
-				auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
-				if (op)
+				if (p->n == L"Value")
 				{
-					X.Value(op->value);
+					auto op = std::dynamic_pointer_cast<DOUBLE_PROPERTY>(p);
+					if (op)
+					{
+						e.Value(op->value);
+					}
 				}
-			}
-			if (p->n == L"IsClearEnabled")
-			{
-				auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
-				if (op)
+				if (p->n == L"IsClearEnabled")
 				{
-					X.IsClearEnabled(op->SelectedIndex);
+					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+					if (op)
+					{
+						e.IsClearEnabled(op->SelectedIndex);
+					}
 				}
 			}
 		}
-		ApplyPropertiesFor(X.as<Control>(), properties);
-		ApplyPropertiesFor(X.as<UIElement>(), properties);
-		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
+		catch (...)
+		{
+
+		}
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
+		auto e = X.as<RatingControl>();
 		properties.clear();
-
-
 		if (1)
 		{
 			std::shared_ptr<BOOL_PROPERTY> op = std::make_shared<BOOL_PROPERTY>();
@@ -73,7 +75,7 @@ public:
 			op->mmax = 100;
 			op->smallchange = 1;
 			op->largechange = 2;
-			op->value = X.MaxRating();
+			op->value = e.MaxRating();
 			op->def = 5;
 			properties.push_back(op);
 		}
@@ -86,14 +88,15 @@ public:
 			op->mmax = 100;
 			op->smallchange = 0.5;
 			op->largechange = 0.5;
-			op->value = X.Value();
-			op->def = X.Value();
+			op->value = e.Value();
+			op->def = e.Value();
 			properties.push_back(op);
 		}
 
-		AddPropertySet<Control>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_Control::CreateProperties();
+		for (auto& pp : p2)
+			properties.push_back(pp);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -101,27 +104,18 @@ public:
 		X = RatingControl();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<RatingControl>(par);
 
 		if (ForWhat == 0)
 		{
 			AllTap(X);
 		}
-		X.Tag(box_value((long long)this));
-		X.IsReadOnly(false);
-		return X;
-	}
 
-
-
-
-	void Select()
-	{
-	}
-
-	void Unselect()
-	{
+		auto b = X.as<RatingControl>();
+		b.Tag(box_value((long long)this));
+		b.IsReadOnly(false);
+		return b;
 	}
 };
 

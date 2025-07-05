@@ -18,7 +18,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
+
         <MenuBar Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" x:Name="menu" >
             <MenuBarItem Title="{x:Bind txt(21);}" >
                 <MenuFlyoutItem Text="{x:Bind txt(7)}" Click="OnNew" >

@@ -1,34 +1,59 @@
 #include "pch.h"
 #include "property.hpp"
 
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e, std::vector <std::shared_ptr<PROPERTY>> props)
+
+void XITEM_Control::ApplyProperties()
 {
+	XITEM_FrameworkElement::ApplyProperties();
+	auto e = X.try_as<winrt::Microsoft::UI::Xaml::Controls::Control>();
 	if (!e)
 		return;
-
-
-	ApplyPropertiesForFont< winrt::Microsoft::UI::Xaml::Controls::Control>(e, props);
-	ApplyPropertiesForBackground< winrt::Microsoft::UI::Xaml::Controls::Control>(e, props);
-	ApplyPropertiesForForeground< winrt::Microsoft::UI::Xaml::Controls::Control>(e,props);
-
-	for (auto& p : props)
+	try
 	{
-		if (p->n == L"IsEnabled")
+		ApplyPropertiesForFont< winrt::Microsoft::UI::Xaml::Controls::Control>(e, properties);
+		ApplyPropertiesForBackground< winrt::Microsoft::UI::Xaml::Controls::Control>(e, properties);
+		ApplyPropertiesForForeground< winrt::Microsoft::UI::Xaml::Controls::Control>(e, properties);
+		for (auto& p : properties)
 		{
-			auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
-			if (op)
+			if (p->n == L"IsEnabled")
 			{
-				e.IsEnabled((bool)op->SelectedIndex);
+				auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+				if (op)
+				{
+					e.IsEnabled((bool)op->SelectedIndex);
+				}
 			}
 		}
+	}
+	catch (...)
+	{
+
 	}
 
 }
 
 
-
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e)
+void XITEM_Control::Select()
 {
+	auto b = X.try_as<winrt::Microsoft::UI::Xaml::Controls::Control>();
+	if (!b)
+		return;
+	b.BorderBrush(SolidColorBrush(Colors::Red()));
+	b.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
+}
+
+void XITEM_Control::Unselect()
+{
+	auto b = X.try_as<winrt::Microsoft::UI::Xaml::Controls::Control>();
+	if (!b)
+		return;
+	b.BorderBrush(nullptr);
+	b.BorderThickness(ThicknessHelper::FromLengths(0, 0, 0, 0));
+}
+
+std::vector<std::shared_ptr<PROPERTY>> XITEM_Control::CreateProperties()
+{
+	auto e = X.try_as<winrt::Microsoft::UI::Xaml::Controls::Control>();
 	std::vector<std::shared_ptr<PROPERTY>> p;
 	if (!e)
 		return p;
@@ -69,6 +94,12 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI:
 		p.push_back(op);
 
 	}
+
+
+	// Add properties from FrameworkElement
+	auto p2 = XITEM_FrameworkElement::CreateProperties();
+	for (auto& pp : p2)
+		p.push_back(pp);
 
 	return p;
 }

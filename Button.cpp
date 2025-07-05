@@ -1,31 +1,25 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_BUTTON : public XITEM
+class ITEM_BUTTON : public XITEM_ButtonBase
 {
 public:
 
-	Button X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_BUTTON()
 	{
 		ElementName = L"Button";
+		X = Button();
 	}
 
 
 	virtual void ApplyProperties()
 	{
+		XITEM_ButtonBase::ApplyProperties();
 		ApplyPropertiesForContent(X.as<Button>(), properties);
-		ApplyPropertiesFor(X.as<Control>(), properties);
-		ApplyPropertiesFor(X.as<UIElement>(), properties);
-		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
 		properties.clear();
 		if (1)
@@ -37,9 +31,10 @@ public:
 				properties.push_back(p);
 			}
 		}
-		AddPropertySet<Control>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_ButtonBase::CreateProperties();
+		for (auto& pp : p2)
+			properties.push_back(pp);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -47,32 +42,17 @@ public:
 		X = Button();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<Button>(par);
 
 		if (ForWhat == 0)
 		{
 			AllTap(X);
 		}
-
-		X.Tag(box_value((long long)this));
-		X.Content(winrt::box_value(L"Button"));
-		return X;
-	}
-
-
-
-
-	void Select()
-	{
-		X.BorderBrush(SolidColorBrush(Colors::Red()));
-		X.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
-	}
-
-	void Unselect()
-	{
-		X.BorderBrush(nullptr);
-		X.BorderThickness(ThicknessHelper::FromLengths(0,0,0,0));
+		auto b = X.as<Button>();
+		b.Tag(box_value((long long)this));
+		b.Content(winrt::box_value(L"Button"));
+		return b;
 	}
 };
 

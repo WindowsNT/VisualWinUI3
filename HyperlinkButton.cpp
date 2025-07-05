@@ -1,25 +1,23 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_HLBUTTON : public XITEM
+class ITEM_HLBUTTON : public XITEM_ButtonBase
 {
 public:
 
-	HyperlinkButton X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_HLBUTTON()
 	{
 		ElementName = L"HyperlinkButton";
+		X = HyperlinkButton();
 	}
 
 
 	virtual void ApplyProperties()
 	{
+		XITEM_ButtonBase::ApplyProperties();
 		try
 		{
+			auto e = X.try_as<HyperlinkButton>();
 			for (auto& p : properties)
 			{
 				if (p->n == L"NavigateUri")
@@ -27,15 +25,12 @@ public:
 					auto op = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
 					if (op)
 					{
-						X.NavigateUri(winrt::Windows::Foundation::Uri(op->value));
+						e.NavigateUri(winrt::Windows::Foundation::Uri(op->value));
 					}
 				}
 			}
 
 			ApplyPropertiesForContent(X.as<HyperlinkButton>(), properties);
-			ApplyPropertiesFor(X.as<Control>(), properties);
-			ApplyPropertiesFor(X.as<UIElement>(), properties);
-			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		}
 		catch (...)
 		{
@@ -44,7 +39,7 @@ public:
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
 		properties.clear();
 		if (1)
@@ -66,9 +61,10 @@ public:
 				properties.push_back(p);
 			}
 		}
-		AddPropertySet<Control>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_ButtonBase::CreateProperties();
+		for (auto& pp : p2)
+			properties.push_back(pp);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -76,7 +72,7 @@ public:
 		X = HyperlinkButton();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<HyperlinkButton>(par);
 
 		if (ForWhat == 0)
@@ -84,25 +80,13 @@ public:
 			AllTap(X);
 		}
 
-		X.Tag(box_value((long long)this));
-		X.Content(winrt::box_value(L"HyperlinkButton"));
-		return X;
+		auto b = X.as<HyperlinkButton>();
+		b.Tag(box_value((long long)this));
+		b.Content(winrt::box_value(L"HyperlinkButton"));
+		return b;
 	}
 
 
-
-
-	void Select()
-	{
-		X.BorderBrush(SolidColorBrush(Colors::Red()));
-		X.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
-	}
-
-	void Unselect()
-	{
-		X.BorderBrush(nullptr);
-		X.BorderThickness(ThicknessHelper::FromLengths(0,0,0,0));
-	}
 };
 
 

@@ -3,17 +3,17 @@ A tool to create a WinUI3 Visually. Supports export to XAML and real-time previe
 
 ## Supported elements so far
 * UIElement
-* FrameworkElement
-  * TextBlock
-  * Control
-    * ButtonBase
-      * Button
-      * HyperlinkButton
-      * ToggleButton
-      * CheckBox
-    * TextBox
-    * RatingControl
-  * Panel
-    * StackPanel
+  * FrameworkElement
+    * TextBlock
+    * Control
+      * ButtonBase
+        * Button
+        * HyperlinkButton
+        * ToggleButton
+        * CheckBox
+      * TextBox
+      * RatingControl
+    * Panel
+      * StackPanel
 
 

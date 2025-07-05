@@ -2,35 +2,26 @@
 #include "property.hpp"
 
 using namespace winrt::Microsoft::UI::Xaml::Controls;
-class ITEM_GRID : public XITEM
+class ITEM_GRID : public XITEM_Panel
 {
 public:
-
-	Grid X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 
 	ITEM_GRID()
 	{
 		ElementName = L"Grid";
+		X = winrt::Microsoft::UI::Xaml::Controls::Grid();
 	}
 
 
 	virtual void ApplyProperties()
 	{
-		ApplyPropertiesFor(X.as<UIElement>(), properties);
-		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
-		ApplyPropertiesFor(X.as<Panel>(), properties);
+		XITEM_Panel::ApplyProperties();
 	}
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
-		properties.clear();
-		AddPropertySet<Panel>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		properties = XITEM_Panel::CreateProperties();
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -38,7 +29,7 @@ public:
 		X = Grid();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<Grid>(par);
 
 		if (ForWhat == 0)
@@ -46,21 +37,13 @@ public:
 			AllTap(X);
 		}
 
-		X.Tag(box_value((long long)this));
+		auto b = X.try_as<Grid>();
+		b.Tag(box_value((long long)this));
 		if (ForWhat == 0)
-			X.Background(SolidColorBrush(Colors::Transparent()));
-		return X;
+			b.Background(SolidColorBrush(Colors::Transparent()));
+		return b;
 	}
 
-	void Select()
-	{
-		X.Background(SolidColorBrush(Colors::Red()));
-	}
-
-	void Unselect()
-	{
-		X.Background(SolidColorBrush(Colors::Transparent()));
-	}
 };
 
 std::shared_ptr<XITEM> CreateXItemGrid()

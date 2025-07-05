@@ -53,6 +53,8 @@ namespace winrt::VisualWinUI3::implementation
             if (!main_page)
                 continue;
 
+            
+
             // Find the item
             if (!SelectedItem)
                 continue;
@@ -74,6 +76,7 @@ namespace winrt::VisualWinUI3::implementation
             }
 
             SelectedItem->ApplyProperties();
+            main_page.ApplyTopProperties();
 
         }
 
@@ -121,6 +124,7 @@ namespace winrt::VisualWinUI3::implementation
             }
 
             SelectedItem->ApplyProperties();
+            main_page.ApplyTopProperties();
 
         }
 
@@ -170,7 +174,7 @@ namespace winrt::VisualWinUI3::implementation
             }
 
             SelectedItem->ApplyProperties();
-
+            main_page.ApplyTopProperties();
         }
     }
 
@@ -216,6 +220,7 @@ namespace winrt::VisualWinUI3::implementation
             }
 
             SelectedItem->ApplyProperties();
+            main_page.ApplyTopProperties();
 
         }
 
@@ -304,7 +309,8 @@ namespace winrt::VisualWinUI3::implementation
             }
 
 			SelectedItem->ApplyProperties();
-            
+            main_page.ApplyTopProperties();
+
 
 
         }

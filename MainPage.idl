@@ -11,6 +11,7 @@ namespace VisualWinUI3
         void Refresh2(String str);
 		Int64 wnd;
         Int64 ProjectPtr{ get; };
+		void ApplyTopProperties();
         Windows.Foundation.Collections.IObservableVector<Item> PropertyItems{ get; };
 		Microsoft.UI.Xaml.Controls.DataTemplateSelector PropertyTypeSelector{ get; };
 

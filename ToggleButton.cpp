@@ -1,26 +1,24 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_TOGGLEBUTTON : public XITEM
+using namespace winrt::Microsoft::UI::Xaml::Controls::Primitives;
+class ITEM_TOGGLEBUTTON : public XITEM_ButtonBase
 {
 public:
 
-	winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_TOGGLEBUTTON()
 	{
 		ElementName = L"ToggleButton";
+		X = winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton();
 	}
 
 
 	virtual void ApplyProperties()
 	{
+		XITEM_ButtonBase::ApplyProperties();
 		try
 		{
-
+			auto e = X.try_as<ToggleButton>();
 			for (auto& p : properties)
 			{
 				if (p->n == L"IsChecked")
@@ -28,7 +26,7 @@ public:
 					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
 					if (op)
 					{
-						X.IsChecked(op->SelectedIndex);
+						e.IsChecked(op->SelectedIndex);
 					}
 				}
 				if (p->n == L"IsThreeState")
@@ -36,15 +34,12 @@ public:
 					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
 					if (op)
 					{
-						X.IsThreeState(op->SelectedIndex);
+						e.IsThreeState(op->SelectedIndex);
 					}
 				}
 			}
 
 			ApplyPropertiesForContent(X.as<winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton>(), properties);
-			ApplyPropertiesFor(X.as<Control>(), properties);
-			ApplyPropertiesFor(X.as<UIElement>(), properties);
-			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		}
 		catch (...)
 		{
@@ -53,7 +48,7 @@ public:
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
 		properties.clear();
 		if (1)
@@ -84,9 +79,10 @@ public:
 			properties.push_back(op);
 		}
 
-		AddPropertySet<Control>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_ButtonBase::CreateProperties();
+		for (auto& pp : p2)
+			properties.push_back(pp);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -94,7 +90,7 @@ public:
 		X = winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton>(par);
 
 		if (ForWhat == 0)
@@ -102,25 +98,14 @@ public:
 			AllTap(X);
 		}
 
-		X.Tag(box_value((long long)this));
-		X.Content(winrt::box_value(L"ToggleButton"));
-		return X;
+		auto b = X.as<winrt::Microsoft::UI::Xaml::Controls::Primitives::ToggleButton>();
+		b.Tag(box_value((long long)this));
+		b.Content(winrt::box_value(L"ToggleButton"));
+		return b;
 	}
 
 
 
-
-	void Select()
-	{
-		X.BorderBrush(SolidColorBrush(Colors::Red()));
-		X.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
-	}
-
-	void Unselect()
-	{
-		X.BorderBrush(nullptr);
-		X.BorderThickness(ThicknessHelper::FromLengths(0,0,0,0));
-	}
 };
 
 

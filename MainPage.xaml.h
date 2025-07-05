@@ -100,7 +100,7 @@ namespace winrt::VisualWinUI3::implementation
         void OnExit(IInspectable const&, IInspectable const&);
         void OnSaveAs(IInspectable const&, IInspectable const&);
 
-     
+		void ApplyTopProperties();
         void Build();
         void Build(winrt::VisualWinUI3::BlankWindow topbw,winrt::Microsoft::UI::Xaml::UIElement iroot,std::shared_ptr<XITEM> root,winrt::Windows::Foundation::IInspectable menu_root,int ForWhat, std::shared_ptr<XITEM> parentroot);
         winrt::Windows::Foundation::Collections::IObservableVector<winrt::VisualWinUI3::Item> PropertyItems();

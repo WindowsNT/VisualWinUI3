@@ -1,50 +1,43 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_CHECKBOX : public XITEM
+class ITEM_CHECKBOX : public XITEM_ButtonBase
 {
 public:
 
-	CheckBox X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_CHECKBOX()
 	{
 		ElementName = L"CheckBox";
+		X = CheckBox();
 	}
 
 
 	virtual void ApplyProperties()
 	{
+		XITEM_ButtonBase::ApplyProperties();
 		try
 		{
-
+			auto e = X.as<CheckBox>();
 			for (auto& p : properties)
 			{
 				if (p->n == L"IsChecked")
 				{
-					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+					auto op = std::dynamic_pointer_cast<BOOL_PROPERTY>(p);
 					if (op)
 					{
-						X.IsChecked(op->SelectedIndex);
+						e.IsChecked(op->SelectedIndex);
 					}
 				}
 				if (p->n == L"IsThreeState")
 				{
-					auto op = std::dynamic_pointer_cast<LIST_PROPERTY>(p);
+					auto op = std::dynamic_pointer_cast<BOOL_PROPERTY>(p);
 					if (op)
 					{
-						X.IsThreeState(op->SelectedIndex);
+						e.IsThreeState(op->SelectedIndex);
 					}
 				}
 			}
 
-			ApplyPropertiesForContent(X.as<CheckBox>(), properties);
-			ApplyPropertiesFor(X.as<Control>(), properties);
-			ApplyPropertiesFor(X.as<UIElement>(), properties);
-			ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 		}
 		catch (...)
 		{
@@ -53,8 +46,9 @@ public:
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
+		auto e = X.as<CheckBox>();
 		properties.clear();
 		if (1)
 		{
@@ -71,6 +65,7 @@ public:
 			op->g = L"CheckBox";
 			op->n = L"IsChecked";
 			op->DefaultIndex = 0;
+			op->SelectedIndex = (e.IsChecked()) ? 1 : 0;
 			properties.push_back(op);
 		}
 		if (1)
@@ -79,12 +74,14 @@ public:
 			op->g = L"CheckBox";
 			op->n = L"IsThreeState";
 			op->DefaultIndex = 0;
+			op->SelectedIndex = (int)e.IsThreeState();
 			properties.push_back(op);
 		}
 
-		AddPropertySet<Control>();
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_ButtonBase::CreateProperties();
+		for (auto& pp : p2)
+			properties.push_back(pp);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -92,7 +89,7 @@ public:
 		X = CheckBox();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<CheckBox>(par);
 
 		if (ForWhat == 0)
@@ -100,25 +97,15 @@ public:
 			AllTap(X);
 		}
 
-		X.Tag(box_value((long long)this));
-		X.Content(winrt::box_value(L"CheckBox"));
-		return X;
+		auto b = X.as<CheckBox>();
+		b.Tag(box_value((long long)this));
+		b.Content(winrt::box_value(L"CheckBox"));
+		return b;
 	}
 
 
 
 
-	void Select()
-	{
-		X.BorderBrush(SolidColorBrush(Colors::Red()));
-		X.BorderThickness(ThicknessHelper::FromLengths(2.0, 2.0, 2.0, 2.0));
-	}
-
-	void Unselect()
-	{
-		X.BorderBrush(nullptr);
-		X.BorderThickness(ThicknessHelper::FromLengths(0,0,0,0));
-	}
 };
 
 

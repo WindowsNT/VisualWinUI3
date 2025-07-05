@@ -1,23 +1,47 @@
 #include "pch.h"
 #include "property.hpp"
 
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e, std::vector <std::shared_ptr<PROPERTY>> props)
+void XITEM_Panel::ApplyProperties()
 {
+	XITEM_FrameworkElement::ApplyProperties();
+	auto e = X.try_as<Panel>();
 	if (!e)
 		return;
-	for (auto& p : props)
+	for (auto& p : properties)
 	{
 		p;
 	}
 }
 
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e)
+std::vector<std::shared_ptr<PROPERTY>> XITEM_Panel::CreateProperties()
 {
+	auto e = X.try_as<Panel>();
 	std::vector<std::shared_ptr<PROPERTY>> p;
 	if (!e)
 		return p;
 
-
+	auto p2 = XITEM_FrameworkElement::CreateProperties();
+	for (auto& pp : p2)
+		p.push_back(pp);
 	return p;
 }
+
+
+void XITEM_Panel::Select()
+{
+	auto e = X.try_as<Panel>();
+	if (!e)
+		return;
+	e.Background(SolidColorBrush(Colors::Red()));
+}
+
+void XITEM_Panel::Unselect()
+{
+	auto e = X.try_as<Panel>();
+	if (!e)
+		return;
+	e.Background(SolidColorBrush(Colors::Transparent()));
+}
+
+

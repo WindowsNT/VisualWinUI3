@@ -276,7 +276,7 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForFont(T e)
 		op->mmin = 1;
 		op->mmax = 100.0;
 		op->value = e.FontSize();
-		op->def = 11.0;
+		op->def = e.FontSize();
 		p.push_back(op);
 	}
 
@@ -300,7 +300,10 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForBackground(T e)
 			auto cont = e.Background();
 			auto solidBrush = cont.try_as<winrt::Microsoft::UI::Xaml::Media::SolidColorBrush>();
 			if (solidBrush)
+			{
 				op->value = solidBrush.Color();
+				op->def = solidBrush.Color();
+			}
 		}
 		catch (...)
 		{
@@ -325,7 +328,10 @@ std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesForForeground(T e)
 			auto cont = e.Foreground();
 			auto solidBrush = cont.try_as<winrt::Microsoft::UI::Xaml::Media::SolidColorBrush>();
 			if (solidBrush)
+			{
 				op->value = solidBrush.Color();
+				op->def = solidBrush.Color();
+			}
 		}
 		catch (...)
 		{

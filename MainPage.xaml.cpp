@@ -155,6 +155,29 @@ namespace winrt::VisualWinUI3::implementation
 		Refresh(L"PropertyTypeSelector");
 	}
 
+	void MainPage::ApplyTopProperties()
+	{
+		if (!project)
+			return;
+		if (!project->root)
+			return;
+
+		auto topnv = Content().as<Panel>();
+
+		Panel rootsp = StackPanel();
+		if (ISXItemStackPanel(project->root.get()))
+			rootsp = topnv.FindName(L"PutRootSP").as<Panel>();
+		if (ISXItemGrid(project->root.get()))
+			rootsp = topnv.FindName(L"PutRootGR").as<Panel>();
+
+		// Apply properties of the root to rootsp
+		XITEM_Panel panel;
+		panel.properties = project->root->properties;
+		panel.X = rootsp;
+		panel.ApplyProperties();
+
+	}
+
 	void MainPage::Build(winrt::VisualWinUI3::BlankWindow topbw,UIElement iroot, std::shared_ptr<XITEM> root, winrt::Windows::Foundation::IInspectable menu_root,int ForWhat, std::shared_ptr<XITEM> parentroot)
 	{
 		if (!root)
@@ -188,7 +211,7 @@ namespace winrt::VisualWinUI3::implementation
 
 		}
 
-		int NextNumberAv = 0;
+		int NextNumberAv = 1;
 		// Add to menu
 		MenuFlyoutSubItem item2;
 		if (menu_root)
@@ -320,11 +343,7 @@ namespace winrt::VisualWinUI3::implementation
 		mrs.Items().Append(mrsitem);
 		Build(nullptr, rootsp, project->root, mrsitem, 0,nullptr);
 
-		// Apply properties of the root to rootsp
-		ApplyPropertiesFor(rootsp.as<Panel>(), project->root->properties);
-		ApplyPropertiesFor(rootsp.as<FrameworkElement>(), project->root->properties);
-		ApplyPropertiesFor(rootsp.as<UIElement>(), project->root->properties);
-
+		ApplyTopProperties();
 		Refresh(L"PropertyItems");
 		Refresh(L"PropertyTypeSelector");
 	}
@@ -460,6 +479,7 @@ namespace winrt::VisualWinUI3::implementation
 
 		auto topnv = Content().as<Panel>();
 		Build(bw,nullptr, project->root, nullptr,1,nullptr);
+
 		bw.Activate();
 	}
 
@@ -472,7 +492,7 @@ namespace winrt::VisualWinUI3::implementation
 
 		auto el = project->root->SaveEl();
 		auto s = el.Serialize();
-		MessageBoxA(0, s.c_str(), 0, 0);
+		MessageBox((HWND)wnd(), XML3::XMLU(s.c_str()).wc(), ttitle, 0);
 	}
 
 	void MainPage::I_StackPanel(IInspectable const&, IInspectable const&)
@@ -485,7 +505,7 @@ namespace winrt::VisualWinUI3::implementation
 			SelectedItem = project->root;
 		}
 		else
-		if (SelectedItem)
+		if (SelectedItem && std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem))
 		{
 			auto j = CreateXItemStackPanel();
 			SelectedItem->children.push_back(j);
@@ -504,12 +524,12 @@ namespace winrt::VisualWinUI3::implementation
 			SelectedItem = project->root;
 		}
 		else
-			if (SelectedItem)
-			{
-				auto j = CreateXItemGrid();
-				SelectedItem->children.push_back(j);
-				SelectedItem = j;
-			}
+		if (SelectedItem && std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem))
+		{
+			auto j = CreateXItemGrid();
+			SelectedItem->children.push_back(j);
+			SelectedItem = j;
+		}
 		Build();
 	}
 
@@ -518,6 +538,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemButton();
 		SelectedItem->children.push_back(j);
@@ -530,6 +552,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemHLButton();
 		SelectedItem->children.push_back(j);
@@ -542,6 +566,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemToggleButton();
 		SelectedItem->children.push_back(j);
@@ -554,6 +580,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemCheckBox();
 		SelectedItem->children.push_back(j);
@@ -566,6 +594,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemCalendarDatePicker();
 		SelectedItem->children.push_back(j);
@@ -578,6 +608,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemTextBlock();
 		SelectedItem->children.push_back(j);
@@ -590,6 +622,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemTextBox();
 		SelectedItem->children.push_back(j);
@@ -602,6 +636,8 @@ namespace winrt::VisualWinUI3::implementation
 		if (!project) return;
 		if (!project->root) return;
 		if (!SelectedItem) return;
+		if (std::dynamic_pointer_cast<XITEM_Panel>(SelectedItem) == nullptr)
+			return;
 
 		auto j = CreateXItemRatingControl();
 		SelectedItem->children.push_back(j);

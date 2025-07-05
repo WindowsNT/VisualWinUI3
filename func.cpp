@@ -140,6 +140,30 @@ void LoadXMLPropertiesfor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PRO
 				}
 			}
 		}
+
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<BOOL_PROPERTY>(p);
+			if (opx)
+			{
+				opx->SelectedIndex = opx->DefaultIndex; // Default to false
+				auto op = ee.FindVariableZ(XML3::XMLU(what.c_str()).bc(), false);
+				if (op)
+				{
+					auto str = op->GetWideValue();
+					std::vector<std::wstring> Items = { L"False", L"True" };
+					for (size_t i = 0; i < Items.size(); i++)
+					{
+						if (Items[i] == str)
+						{
+							opx->SelectedIndex = i;
+							break;
+						}
+					}
+				}
+			}
+		}
+
 		if (1)
 		{
 			auto opx = std::dynamic_pointer_cast<STRING_PROPERTY>(p);
@@ -180,6 +204,19 @@ void XMLPropertiesFor(XML3::XMLElement& ee,std::vector <std::shared_ptr<PROPERTY
 			{
 				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
 				op.SetWideValue(opx->Items[opx->SelectedIndex].c_str());
+			}
+		}
+
+		if (1)
+		{
+			auto opx = std::dynamic_pointer_cast<BOOL_PROPERTY>(p);
+			if (opx && opx->SelectedIndex != opx->DefaultIndex)
+			{
+				auto& op = ee.AddVariable(XML3::XMLU(what.c_str()).bc());
+				if (opx->SelectedIndex)
+					op.SetWideValue(L"True");
+				else
+					op.SetWideValue(L"False");
 			}
 		}
 

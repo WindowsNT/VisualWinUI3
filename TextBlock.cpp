@@ -1,32 +1,27 @@
 #include "pch.h"
 #include "property.hpp"
 
-class ITEM_TEXTBLOCK : public XITEM
+class ITEM_TEXTBLOCK : public XITEM_FrameworkElement
 {
 public:
 
-	TextBlock X;
-	virtual winrt::Windows::Foundation::IInspectable XX() override
-	{
-		return X;
-	}
 	ITEM_TEXTBLOCK()
 	{
 		ElementName = L"TextBlock";
+		X = TextBlock();
 	}
 
 
 	virtual void ApplyProperties()
 	{
+		XITEM_FrameworkElement::ApplyProperties();
 		ApplyPropertiesForForeground(X.as<TextBlock>(), properties);
 		ApplyPropertiesForFont(X.as<TextBlock>(), properties);
 		ApplyPropertiesForText(X.as<TextBlock>(), properties);
-		ApplyPropertiesFor(X.as<UIElement>(), properties);
-		ApplyPropertiesFor(X.as<FrameworkElement>(), properties);
 	}
 
 
-	virtual void LoadProperties() override
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties() override
 	{
 		properties.clear();
 		if (1)
@@ -60,8 +55,10 @@ public:
 
 
 		}
-		AddPropertySet<FrameworkElement>();
-		AddPropertySet<UIElement>();
+		auto p2 = XITEM_FrameworkElement::CreateProperties();
+		for (auto& p : p2)
+			properties.push_back(p);
+		return properties;
 	}
 
 	virtual winrt::Microsoft::UI::Xaml::UIElement Create(int ForWhat, XITEM* par) override
@@ -69,29 +66,20 @@ public:
 		X = TextBlock();
 		the_par = par;
 		if (properties.empty())
-			LoadProperties();
+			properties = CreateProperties();
 		AddGridPropertiesIf<TextBlock>(par);
 
 		if (ForWhat == 0)
 		{
 			AllTap(X);
 		}
-		X.Tag(box_value((long long)this));
+		auto b = X.as<TextBlock>();
+		b.Tag(box_value((long long)this));
 		if (ForWhat == 0)
-			X.Text(L"Hello");
-		return X;
+			b.Text(L"Hello");
+		return b;
 	}
 
-
-
-
-	void Select()
-	{
-	}
-
-	void Unselect()
-	{
-	}
 };
 
 

@@ -163,8 +163,10 @@
       <SubType>Code</SubType>
     </ClCompile>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="ButtonBase.cpp" />
     <ClCompile Include="CalendarDatePicker.cpp" />
     <ClCompile Include="CheckBox.cpp" />
+    <ClCompile Include="ContentControl.cpp" />
     <ClCompile Include="Control.cpp" />
     <ClCompile Include="FrameworkElement.cpp" />
     <ClCompile Include="func.cpp" />

@@ -258,10 +258,10 @@ public:
 	}
 };
 
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props);
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props);
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e, std::vector <std::shared_ptr<PROPERTY>> props);
-void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e, std::vector <std::shared_ptr<PROPERTY>> props);
+//void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e, std::vector <std::shared_ptr<PROPERTY>> props);
+//void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e, std::vector <std::shared_ptr<PROPERTY>> props);
+//void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e, std::vector <std::shared_ptr<PROPERTY>> props);
+//void ApplyPropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e, std::vector <std::shared_ptr<PROPERTY>> props);
 
 using namespace winrt::Microsoft::UI::Xaml::Media;
 using namespace winrt;
@@ -272,9 +272,7 @@ using namespace Windows::UI;
 
 #include "templateproperties.h"
 
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::UIElement e);
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::FrameworkElement e);
-std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Control e);
 std::vector<std::shared_ptr<PROPERTY>> CreatePropertiesFor(winrt::Microsoft::UI::Xaml::Controls::Panel e);
 
 void XMLPropertiesFor(XML3::XMLElement& ee, std::vector <std::shared_ptr<PROPERTY>> props);
@@ -285,6 +283,8 @@ class XITEM : public SERIALIZABLE
 {
 public:
 
+	winrt::Windows::Foundation::IInspectable X;
+
 	std::wstring ElementName; // Say, "StackPanel"
 	std::vector<std::shared_ptr<PROPERTY>> properties;
 	std::vector<std::shared_ptr<XITEM>> children;
@@ -294,9 +294,9 @@ public:
 		par;
 		return nullptr;
 	}
-	virtual void LoadProperties()
+	virtual std::vector<std::shared_ptr<PROPERTY>> CreateProperties()
 	{
-
+		return {};
 	}
 	virtual void ApplyProperties()
 	{
@@ -311,7 +311,7 @@ public:
 
 		if (1)
 		{
-			auto uip = CreatePropertiesForParentGrid(XX().as<T>());
+			auto uip = CreatePropertiesForParentGrid(X.as<T>());
 			for (auto& p : uip)
 			{
 				p->g = L"Grid";
@@ -321,31 +321,31 @@ public:
 		}
 	}
 
-	virtual winrt::Windows::Foundation::IInspectable XX()
-	{
-		return nullptr;
-	}
 
 	template <typename T>
 	void AllTap(T X)
 	{
-		X.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
-		X.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
-			{
-				GenericTap(t);
-				teh.Handled(true);
-			});
-
+		auto b = X.try_as<winrt::Microsoft::UI::Xaml::Controls::Control>();
+		if (b)
+		{
+			b.Tapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::TappedRoutedEventArgs  teh)
+				{
+					GenericTap(t);
+					teh.Handled(true);
+				});
+			b.RightTapped([](winrt::Windows::Foundation::IInspectable t, winrt::Microsoft::UI::Xaml::Input::RightTappedRoutedEventArgs  teh)
+				{
+					GenericTap(t);
+					teh.Handled(true);
+				});
+		}
 	}
 
+/*
 	template <typename T>
 	size_t AddPropertySet()
 	{
-		auto uip = CreatePropertiesFor(XX().as<T>());
+		auto uip = CreatePropertiesFor(X.as<T>());
 		std::sort(uip.begin(), uip.end(), [](std::shared_ptr<PROPERTY> left, std::shared_ptr<PROPERTY> right) -> bool
 			{
 				if (left->n < right->n)
@@ -360,7 +360,7 @@ public:
 
 		return uip.size();
 	}
-
+	*/
 
 	virtual XML3::XMLElement SaveEl()
 	{
@@ -419,6 +419,53 @@ std::shared_ptr<XITEM> CreateXItemTextBox();
 std::shared_ptr<XITEM> CreateXItemRatingControl();
 std::shared_ptr<XITEM> CreateXItemCalendarDatePicker();
 
+
+class XITEM_UIElement: public XITEM
+{
+	public:
+		void ApplyProperties();
+		std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+};
+
+class XITEM_FrameworkElement : public XITEM_UIElement
+{
+	public:
+		void ApplyProperties();
+		std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+};
+
+class XITEM_Control : public XITEM_FrameworkElement
+{
+	public:
+		void ApplyProperties();
+		std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+		void Select();
+		void Unselect();
+};
+
+class XITEM_Panel : public XITEM_FrameworkElement
+{
+public:
+	void ApplyProperties();
+	std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+	void Select();
+	void Unselect();
+};
+
+class XITEM_ContentControl : public XITEM_Control
+{
+public:
+	void ApplyProperties();
+	std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+};
+
+class XITEM_ButtonBase : public XITEM_ContentControl
+{
+public:
+	void ApplyProperties();
+	std::vector<std::shared_ptr<PROPERTY>> CreateProperties();
+};
+
 inline bool IsSomeParentGrid(XITEM* xit,bool = false)
 {
 	if (!xit)
@@ -433,7 +480,7 @@ inline bool IsSomeParentGrid(XITEM* xit,bool = false)
 inline void XITEM::Unser(XML3::XMLElement& el)
 {
 	children.clear();
-	LoadProperties();
+	CreateProperties();
 	LoadXMLPropertiesfor(el, properties);
 	for (auto& e : el)
 	{
